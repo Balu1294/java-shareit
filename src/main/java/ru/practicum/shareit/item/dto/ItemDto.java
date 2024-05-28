@@ -5,14 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.user.User;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 @AllArgsConstructor
 @Builder
 public class ItemDto {
     private int id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String description;
-    private boolean available;
-    private User owner;
-    private String request;
+    @NotNull
+    private Boolean available;
+    private Integer ownerId;
+    private Integer requestId;
 }
