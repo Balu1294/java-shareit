@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Builder
 public class Item {
-    private int id;
+    private Integer id;
     @NotBlank
     private String name;
     @NotBlank

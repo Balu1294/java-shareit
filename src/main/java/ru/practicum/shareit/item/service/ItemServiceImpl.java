@@ -26,16 +26,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void updateItem(Integer ownerId, Integer itemId) {
+    public ItemDto updateItem(Integer ownerId, Integer itemId, ItemDto itemDto) {
         getItemById(ownerId, itemId);
-        itemRepository.updateItem(ownerId, itemId);
+        userRepository.getUserById(ownerId);
+        return itemRepository.updateItem(ownerId, itemId, itemDto);
     }
 
     @Override
-    public Item getItemById(Integer ownerId, Integer itemId) {
-        Item item = itemRepository.getItemById(ownerId, itemId).orElseThrow(() ->
-                new NotFoundItemException(String.format("Вещь с id = %d отсутствует", ownerId)));
-        return item;
+    public ItemDto getItemById(Integer ownerId, Integer itemId) {
+        return itemRepository.getItemById(ownerId, itemId);
     }
 
     @Override

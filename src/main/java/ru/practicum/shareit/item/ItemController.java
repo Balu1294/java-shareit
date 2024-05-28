@@ -21,9 +21,16 @@ public class ItemController {
 
     @PostMapping
     public ItemDto itemCreate(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
-                               @Valid @RequestBody ItemDto itemDto) {
+                              @Valid @RequestBody ItemDto itemDto) {
         log.info("Поступил запрос на создание вещи");
         return itemService.createItem(ownerId, itemDto);
+    }
+
+    @PatchMapping("/{item-id}")
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
+                              @Valid @RequestBody ItemDto itemDto,
+                              @PathVariable("item-id") Integer itemId) {
+        return itemService.updateItem(ownerId, itemId, itemDto);
     }
 
 }

@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.repository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.item.NotFoundItemException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -21,7 +22,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     private int idGenerator = 1;
 
     @Override
-    public ItemDto createItem(Integer ownerId,ItemDto itemDto, User user) {
+    public ItemDto createItem(Integer ownerId, ItemDto itemDto, User user) {
         Item item = ItemMapper.toItem(itemDto);
         item.setId(idGenerator++);
         List<Item> itemsOfOwner = new ArrayList<>();
@@ -32,15 +33,34 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public void updateItem(Integer ownerId, Integer itemId) {
-//        items.put(item.getId(), item);
+    public ItemDto updateItem(Integer ownerId, Integer itemId, ItemDto itemDto) {
+        Item item = ItemMapper.toItem(itemDto);
+        if (item.getName() != null) {
+            item.setName(itemDto.getName());
+        }
+        if (item.getDescription() != null) {
+            item.setDescription(itemDto.getDescription());
+        }
+        if (item.getOwner() != null) {
+            item.setOwner(User.builder().id(itemDto.getOwnerId()).build());
+        }
+        if (item.getAvailable() != null) {
+            item.setAvailable(itemDto.getAvailable());
+        }
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
-    public Optional<Item> getItemById(Integer ownerId, Integer itemId) {
-        List<Item> items1 = items.get(ownerId);
-        Item item = items1.stream().filter(i -> i.getId()==itemId).collect(Collectors.toList()).get(0);
-        return Optional.of(item);
+    public ItemDto getItemById(Integer ownerId, Integer itemId) {
+        List<Item> itemList = items.get(ownerId);
+        if (itemList == null) {
+            throw new NotFoundItemException("У пользователя с id=" + ownerId + " нет вещей");
+        }
+        Item item = itemList.stream()
+                .filter(it -> it.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundItemException("Вещи с id = " + itemId + " не существует"));
+        return ItemMapper.toItemDto(item);
     }
 
     @Override

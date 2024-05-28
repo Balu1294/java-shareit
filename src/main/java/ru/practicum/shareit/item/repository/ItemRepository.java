@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ItemRepository {
     ItemDto createItem(Integer ownerId, ItemDto itemDto, User user);
-    void updateItem(Integer ownerId, Integer itemId);
-    Optional<Item> getItemById(Integer ownerId, Integer itemId);
+    ItemDto updateItem(Integer ownerId, Integer itemId, ItemDto itemDto);
+    ItemDto getItemById(Integer ownerId, Integer itemId);
     List<Item> getAllItems(Integer ownerId);
 }
