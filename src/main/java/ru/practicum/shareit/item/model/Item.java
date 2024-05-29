@@ -4,7 +4,6 @@ package ru.practicum.shareit.item.model;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.user.User;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
