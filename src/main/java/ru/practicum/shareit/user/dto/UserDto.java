@@ -16,10 +16,8 @@ import javax.validation.constraints.NotNull;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
     Integer id;
-    @NotNull
     @NotBlank
     String name;
-    @NotNull
     @NotBlank
     @Email
     String email;
