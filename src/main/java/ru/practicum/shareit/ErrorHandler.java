@@ -5,8 +5,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.item.NotFoundItemException;
-import ru.practicum.shareit.item.NotValidationItemException;
+import ru.practicum.shareit.item.exception.NotFoundItemException;
+import ru.practicum.shareit.item.exception.NotValidationItemException;
 import ru.practicum.shareit.user.exception.EmailDuplicateException;
 import ru.practicum.shareit.user.exception.NotFoundUserException;
 
