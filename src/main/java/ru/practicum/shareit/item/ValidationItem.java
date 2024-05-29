@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.exception.NotValidationItemException;
 
 @UtilityClass
 public class ValidationItem {

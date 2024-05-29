@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.item.exception.NotFoundItemException;
+import ru.practicum.shareit.item.NotFoundItemException;
 import ru.practicum.shareit.item.ValidationItem;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
