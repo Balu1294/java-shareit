@@ -85,7 +85,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             itemList.stream()
                     .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
                             || item.getDescription().toLowerCase().contains(text.toLowerCase())
-                            & item.getAvailable().equals(true))
+                            && item.getAvailable().equals(true))
                     .forEach(item -> searchItems.add(ItemMapper.toItemDto(item)));
         }
         return searchItems;
