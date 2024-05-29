@@ -5,9 +5,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.item.NotFoundItemException;
-import ru.practicum.shareit.user.EmailDuplicateException;
-import ru.practicum.shareit.user.NotFoundUserException;
+import ru.practicum.shareit.item.exception.NotFoundItemException;
+import ru.practicum.shareit.item.exception.NotValidationItemException;
+import ru.practicum.shareit.user.exception.EmailDuplicateException;
+import ru.practicum.shareit.user.exception.NotFoundUserException;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -17,6 +18,12 @@ public class ErrorHandler {
     public ErrorResponse handleNotValidException(final MethodArgumentNotValidException e) {
         return new ErrorResponse(e.getMessage());
     }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleNotValidException(final NotValidationItemException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
