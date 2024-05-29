@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/items")
@@ -30,7 +31,26 @@ public class ItemController {
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
                               @Valid @RequestBody ItemDto itemDto,
                               @PathVariable("item-id") Integer itemId) {
+        log.info("Поступил запрос на обновление данных о вещи с id= {}", itemId);
         return itemService.updateItem(ownerId, itemId, itemDto);
     }
 
+    @GetMapping("/{item-id}")
+    public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
+                               @PathVariable("item-id") Integer itemId) {
+        log.info("Поступил запрос на получение данных о вещи с id= {}", itemId);
+        return itemService.getItemById(ownerId, itemId);
+    }
+
+    @GetMapping
+    public List<Item> getAllItemsByUser(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
+        log.info("Поступил запрос на получение списка вещей пользователя с id= {}", ownerId);
+        return itemService.getAllItems(ownerId);
+    }
+
+    @GetMapping("/search")
+    public List<ItemDto> searchItem(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
+                                    @RequestParam("text") String text) {
+        return itemService.search(text);
+    }
 }

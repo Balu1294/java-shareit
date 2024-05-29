@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -9,11 +10,12 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
-    private Integer id;
+    Integer id;
     @NotBlank
-    private String name;
+    String name;
     @NotBlank
     @Email
-    private String email;
+    String email;
 }

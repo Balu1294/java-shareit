@@ -12,4 +12,6 @@ public interface ItemRepository {
     ItemDto updateItem(Integer ownerId, Integer itemId, ItemDto itemDto);
     ItemDto getItemById(Integer ownerId, Integer itemId);
     List<Item> getAllItems(Integer ownerId);
+    List<ItemDto> search(String text);
+
 }

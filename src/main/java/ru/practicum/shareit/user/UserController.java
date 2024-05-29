@@ -22,12 +22,12 @@ public class UserController {
     @PostMapping
     public UserDto userCreate(@Valid @RequestBody UserDto userDto) {
         log.info("Поступил запрос на создание пользователя");
-       return userService.usercreate(userDto);
+        return userService.usercreate(userDto);
     }
 
     @PatchMapping("/{id}")
     public UserDto userUpdate(@PathVariable Integer id,
-                           @RequestBody UserDto userDto) {
+                              @RequestBody UserDto userDto) {
         log.info("Поступил запрос на обновлении данных о пользователе");
         return userService.userUpdate(id, userDto);
     }
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-public void removeUser(@PathVariable Integer id) {
+    public void removeUser(@PathVariable Integer id) {
         log.info("Поступил запрос на удаление пользователя");
         userService.removeUser(id);
     }

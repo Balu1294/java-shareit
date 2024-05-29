@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.NotFoundItemException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -40,5 +39,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> getAllItems(Integer ownerId) {
         return itemRepository.getAllItems(ownerId);
+    }
+
+    @Override
+    public List<ItemDto> search(String text) {
+        return itemRepository.search(text);
     }
 }
