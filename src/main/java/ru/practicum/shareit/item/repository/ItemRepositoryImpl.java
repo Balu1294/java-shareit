@@ -7,7 +7,6 @@ import ru.practicum.shareit.item.ValidationItem;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     private int idGenerator = 1;
 
     @Override
-    public ItemDto createItem(Integer ownerId, ItemDto itemDto, User user) {
+    public ItemDto createItem(Integer ownerId, ItemDto itemDto) {
         ValidationItem.validation(itemDto);
         Item item = ItemMapper.toItem(itemDto);
         item.setId(idGenerator++);

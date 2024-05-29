@@ -21,7 +21,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto createItem(Integer ownerId, ItemDto itemDto) {
         userRepository.getUserById(ownerId);
         User user = UserMapper.toUser(userRepository.getUserById(ownerId));
-        return itemRepository.createItem(ownerId, itemDto, user);
+        return itemRepository.createItem(ownerId, itemDto);
     }
 
     @Override
