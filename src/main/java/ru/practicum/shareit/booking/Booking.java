@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "bookings")
 public class Booking implements Comparable<Booking> {
