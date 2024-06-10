@@ -3,12 +3,9 @@ package ru.practicum.shareit.item.model;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.User;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -31,7 +28,8 @@ public class Item {
     @Column(name = "available", nullable = false)
     @NotNull
     Boolean available;
-    @Column(name = "owner_id", nullable = false)
-    Integer ownerId;
-    ItemRequest request;
+    @JoinColumn(name = "owner_id")
+    User owner;
+    @Column(name = "request_id", nullable = false)
+    Integer requestId;
 }
