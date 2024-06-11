@@ -3,6 +3,9 @@ package ru.practicum.shareit.user.mapper;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class UserMapper {
     public static UserDto toUserDto(User user) {
         return UserDto.builder()
@@ -18,5 +21,9 @@ public class UserMapper {
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .build();
+    }
+
+    public static List<UserDto> toUserDtoList(List<User> users) {
+        return users.stream().map(user -> toUserDto(user)).collect(Collectors.toList());
     }
 }

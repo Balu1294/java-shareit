@@ -3,10 +3,11 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.exception.NotFoundItemException;
+import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.exception.NotFoundUserException;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
@@ -19,21 +20,26 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(Integer ownerId, ItemDto itemDto) {
-        userRepository.getUserById(ownerId);
-        User user = UserMapper.toUser(userRepository.getUserById(ownerId));
-        return itemRepository.createItem(ownerId, itemDto);
+        userRepository.findById(ownerId).orElseThrow(() ->
+                new NotFoundUserException(String.format("Пользователя с id: {}  не существует", ownerId)));
+        Item item = itemRepository.save(ItemMapper.toItem(itemDto));
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemDto updateItem(Integer ownerId, Integer itemId, ItemDto itemDto) {
         getItemById(ownerId, itemId);
-        userRepository.getUserById(ownerId);
-        return itemRepository.updateItem(ownerId, itemId, itemDto);
+        userRepository.findById(ownerId);
+        Item item = itemRepository.save(ItemMapper.toItem(itemDto));
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemDto getItemById(Integer ownerId, Integer itemId) {
-        return itemRepository.getItemById(ownerId, itemId);
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+                new NotFoundItemException(String.format("Вещи с id: {} не существует", itemId)));
+        getItemById(ownerId, itemId);
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
