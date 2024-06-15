@@ -28,6 +28,7 @@ public class Item {
     @Column(name = "available", nullable = false)
     @NotNull
     Boolean available;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     User owner;
     @Column(name = "request_id", nullable = false)
