@@ -10,7 +10,9 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.exception.NotFoundUserException;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,11 +46,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getAllItems(Integer ownerId) {
-        return itemRepository.getAllItems(ownerId);
+        List<Item> items = itemRepository.findAll().stream()
+                .filter(item -> item.getOwner().getId().equals(ownerId))
+                .collect(Collectors.toList());
+        return new ArrayList<>(items);
     }
 
     @Override
     public List<ItemDto> search(String text) {
-        return itemRepository.search(text);
+        if (text.isBlank()) {
+            return new ArrayList<>();
+        }
+        List<Item> items = itemRepository
+                .findAllByAvailableAndDescriptionContainingIgnoreCaseOrNameContainingIgnoreCase(true, text, text);
+        return ItemMapper.toItemDtoList(items);
     }
 }
