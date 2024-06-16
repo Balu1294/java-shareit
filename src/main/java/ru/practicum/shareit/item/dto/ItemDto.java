@@ -7,14 +7,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDto {
     Integer id;
+    @NotBlank
     String name;
+    @NotBlank
     String description;
+    @NotNull
     Boolean available;
     Integer ownerId;
     Integer requestId;
