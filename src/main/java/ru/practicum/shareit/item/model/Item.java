@@ -18,19 +18,23 @@ import javax.validation.constraints.NotNull;
 @Table(name = "items")
 public class Item {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    @Column(name = "name", nullable = false)
+
+    @Column
     @NotBlank
     String name;
-    @Column(name = "description", nullable = false)
+
+    @Column
     @NotBlank
     String description;
-    @Column(name = "available", nullable = false)
-    @NotNull
+
+    @Column
+//    @NotNull
     Boolean available;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     User owner;
-    @Column(name = "request_id", nullable = false)
-    Integer requestId;
+//    @Column(name = "request_id", nullable = false)
+//    Integer requestId;
 }

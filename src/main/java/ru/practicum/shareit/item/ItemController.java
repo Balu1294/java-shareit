@@ -26,7 +26,7 @@ public class ItemController {
 
     @PatchMapping("/{item-id}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
-                              @Valid @RequestBody ItemDto itemDto,
+                              @RequestBody ItemDto itemDto,
                               @PathVariable("item-id") Integer itemId) {
         log.info("Поступил запрос на обновление данных о вещи с id= {}", itemId);
         return itemService.updateItem(ownerId, itemId, itemDto);
@@ -40,9 +40,10 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<Item> getAllItemsByUser(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
+    public List<ItemDto> getAllItemsByUser(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
         log.info("Поступил запрос на получение списка вещей пользователя с id= {}", ownerId);
-        return itemService.getAllItems(ownerId);
+        List<ItemDto> items = itemService.getAllItems(ownerId);
+        return items;
     }
 
     @GetMapping("/search")
@@ -50,4 +51,8 @@ public class ItemController {
                                     @RequestParam("text") String text) {
         return itemService.search(text);
     }
+//    @GetMapping
+//    public List<ItemDto> getItemsForUser(@RequestHeader("X-Sharer-User-Id") Integer userId) {
+//        return itemService.getItemsForUser(userId);
+//    }
 }

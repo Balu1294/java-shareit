@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.exception.NotFoundUserException;
@@ -17,12 +18,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public UserDto usercreate(UserDto userDto) {
-        User user = userRepository.save(UserMapper.toUser(userDto));
+        User user = UserMapper.toUser(userDto);
+               user = userRepository.save(user);
         return UserMapper.toUserDto(user);
     }
 
     @Override
+    @Transactional
     public UserDto userUpdate(Integer id, UserDto userDto) {
         User user = UserMapper.toUser(getUserById(id));
         if (userDto.getName() != null) {
@@ -31,14 +35,14 @@ public class UserServiceImpl implements UserService {
         if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
-        User userUpdate = userRepository.save(UserMapper.toUser(userDto));
+        user = userRepository.save(user);
         return UserMapper.toUserDto(user);
     }
 
     @Override
     public UserDto getUserById(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new NotFoundUserException(String.format("Пользователя с id: {}  не существует", id)));
+                new NotFoundUserException(String.format("Пользователя с id: %d  не существует", id)));
         return UserMapper.toUserDto(user);
     }
 
@@ -49,6 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void removeUser(Integer id) {
         User user = UserMapper.toUser(getUserById(id));
         userRepository.delete(user);

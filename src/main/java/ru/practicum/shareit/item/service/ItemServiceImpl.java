@@ -2,14 +2,23 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exception.NotFoundItemException;
+import ru.practicum.shareit.item.exception.NotValidationException;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.exception.NotFoundUserException;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,37 +28,58 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
     public ItemDto createItem(Integer ownerId, ItemDto itemDto) {
-        userRepository.findById(ownerId).orElseThrow(() ->
-                new NotFoundUserException(String.format("Пользователя с id: {}  не существует", ownerId)));
-        Item item = itemRepository.save(ItemMapper.toItem(itemDto));
+        User user = userRepository.findById(ownerId).orElseThrow(() ->
+                new NotFoundUserException(String.format("Пользователя с id: %d  не существует", ownerId)));
+        Item item = itemRepository.save(ItemMapper.toItem(itemDto, user));
         return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemDto updateItem(Integer ownerId, Integer itemId, ItemDto itemDto) {
-        getItemById(ownerId, itemId);
-        userRepository.findById(ownerId);
-        Item item = itemRepository.save(ItemMapper.toItem(itemDto));
+        User user = userRepository.findById(ownerId).orElseThrow(() ->
+                new NotFoundUserException(String.format("Пользователя с id: %d  не существует", ownerId)));
+        Item item = ItemMapper.toItem(getItemById(ownerId, itemId), user);
+        if (itemDto.getId() != null) {
+            item.setId(itemDto.getId());
+        }
+        if (itemDto.getName() != null) {
+            item.setName(itemDto.getName());
+        }
+        if (itemDto.getDescription() != null) {
+            item.setDescription(itemDto.getDescription());
+        }
+//        if (itemDto.getOwnerId() != null) {
+//            item.setOwnerId(itemDto.getOwnerId());
+//        }
+        if (itemDto.getAvailable() != null) {
+            item.setAvailable(itemDto.getAvailable());
+        }
+        item = itemRepository.save(item);
         return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemDto getItemById(Integer ownerId, Integer itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundItemException(String.format("Вещи с id: {} не существует", itemId)));
-        getItemById(ownerId, itemId);
+                new NotFoundItemException(String.format("Вещи с id: %d не существует", itemId)));
+//        getItemById(ownerId, itemId);
         return ItemMapper.toItemDto(item);
     }
 
     @Override
-    public List<Item> getAllItems(Integer ownerId) {
-        List<Item> items = itemRepository.findAll().stream()
+    public List<ItemDto> getAllItems(Integer ownerId) {
+        User user = userRepository.findById(ownerId).orElseThrow(()-> new NotFoundUserException(""));
+        List<Item> items = itemRepository.findAll();
+        List<ItemDto> itemsfiltr = items.stream()
                 .filter(item -> item.getOwner().getId().equals(ownerId))
+                .map(item -> ItemMapper.toItemDto(item))
                 .collect(Collectors.toList());
-        return new ArrayList<>(items);
+        return itemsfiltr;
     }
 
     @Override
@@ -60,5 +90,36 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = itemRepository
                 .findAllByAvailableAndDescriptionContainingIgnoreCaseOrNameContainingIgnoreCase(true, text, text);
         return ItemMapper.toItemDtoList(items);
+    }
+
+    @Override
+    public CommentDto addComment(CommentDto commentDto, Integer userId, Integer itemId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundItemException(String.format("Вещь с id: %d отсутствует", itemId)));
+User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundUserException(""));
+        if (item.getOwner().getId().equals(userId)) {
+            throw new NotValidationException("Владелец не может оставить отзыв");
+        }
+
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByEndDesc(userId, LocalDateTime.now());
+
+        bookings.stream()
+                .filter((booking) -> booking.getBooker().getId().equals(userId))
+                .findFirst()
+                .orElseThrow(() -> new NotValidationException("Пользователь с id: " + userId +
+                        " не может взять в аренду вещь с  id: " + itemId));
+
+        commentDto.setCreated(LocalDateTime.now());
+        Comment comment = commentRepository.save(CommentMapper.toComment(commentDto, user));
+        return CommentMapper.toCommentDto(comment);
+    }
+
+    @Override
+    public List<ItemDto> getItemsForUser(Integer userId) {
+        List<Item> items = itemRepository.findAllByOwnerId(userId);
+        return items.stream()
+                .filter(item -> item.getOwner().getId().equals(userId))
+                .map(item -> ItemMapper.toItemDto(item))
+                .collect(Collectors.toList());
     }
 }

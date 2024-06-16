@@ -3,10 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -19,12 +16,14 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "users")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    @Column(name = "name", nullable = false)
-    @NotBlank
+
+    @Column
+//    @NotBlank
     String name;
-    @Column(name = "email", nullable = false)
-    @NotBlank
+    @Column(unique = true)
+//    @NotBlank
     @Email
     String email;
 }

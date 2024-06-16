@@ -12,6 +12,7 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.exception.NotFoundItemException;
 import ru.practicum.shareit.item.exception.NotValidationException;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.exception.NotFoundUserException;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -28,17 +29,17 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto createBooking(BookingDto bookingDto, Integer userId) {
-        checkUser(userId);
+        User user = checkUser(userId);
         itemRepository.findById(bookingDto.getItem().getId()).orElseThrow(() -> new NotFoundItemException(String.format("Вещи с id: %d не существует", bookingDto.getItem().getId())));
-        Booking booking = bookingRepository.save(BookingMapper.toBooking(bookingDto));
+        Booking booking = bookingRepository.save(BookingMapper.toBooking(bookingDto, user));
         log.info("Бронирование с id: {} создано", booking.getId());
         return BookingMapper.toBookingDto(booking);
     }
 
     @Override
     public void removeBooking(Integer bookingId, Integer userId) {
-        checkUser(userId);
-        Booking booking = BookingMapper.toBooking(getBookingById(bookingId, userId));
+        User user = checkUser(userId);
+        Booking booking = BookingMapper.toBooking(getBookingById(bookingId, userId), user);
         bookingRepository.delete(booking);
     }
 
@@ -51,7 +52,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto setApprove(Integer bookingId, String approve, Integer userId) {
-        Booking booking = BookingMapper.toBooking(getBookingById(bookingId, userId));
+        User user = checkUser(userId);
+        Booking booking = BookingMapper.toBooking(getBookingById(bookingId, userId), user);
         if (booking.getStatus().equals(Status.APPROVED)) {
             throw new NotFoundBookingException(String.format("Бронирование с id: %d уже имеет статус APPROVED", bookingId));
         }
@@ -110,7 +112,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findBookingByUserId(userId);
                 break;
             case "CURRENT":
-                bookings = bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByEndTimeDesc(userId,
+                bookings = bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(userId,
                         time, time);
                 break;
             case "PAST":
@@ -133,7 +135,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
-    private void checkUser(Integer userId) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(String.format("Пользователя с id: %d не существует", userId)));
+    private User checkUser(Integer userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(String.format("Пользователя с id: %d не существует", userId)));
     }
 }
