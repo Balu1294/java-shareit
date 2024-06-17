@@ -33,6 +33,16 @@ public class ItemMapper {
                 .build();
     }
 
+//    public static ItemBookDto toItemBookDto(Item item, BookingDto lastBooking, BookingDto nextBooking, List<CommentDto> comments) {
+//        Integer itemId = item.getId();
+//        String name = item.getName();
+//        User owner = item.getOwner();
+//        String description = item.getDescription();
+//        Boolean available = item.getAvailable();
+//
+//        return new ItemBookDto(itemId, name, UserMapper.toUserDto(owner), description, available, lastBooking, nextBooking, comments);
+//    }
+
     public static Item toItem(ItemDto itemDto, User user) {
         return Item.builder()
                 .id(itemDto.getId())
