@@ -3,6 +3,8 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemBookDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -33,16 +35,16 @@ public class ItemController {
     }
 
     @GetMapping("/{item-id}")
-    public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
-                               @PathVariable("item-id") Integer itemId) {
+    public ItemBookDto getItemById(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
+                                   @PathVariable("item-id") Integer itemId) {
         log.info("Поступил запрос на получение данных о вещи с id= {}", itemId);
         return itemService.getItemById(ownerId, itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemsByUser(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
+    public List<ItemBookDto> getAllItemsByUser(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
         log.info("Поступил запрос на получение списка вещей пользователя с id= {}", ownerId);
-        List<ItemDto> items = itemService.getAllItems(ownerId);
+        List<ItemBookDto> items = itemService.getAllItems(ownerId);
         return items;
     }
 
@@ -51,8 +53,10 @@ public class ItemController {
                                     @RequestParam("text") String text) {
         return itemService.search(text);
     }
-//    @GetMapping
-//    public List<ItemDto> getItemsForUser(@RequestHeader("X-Sharer-User-Id") Integer userId) {
-//        return itemService.getItemsForUser(userId);
-//    }
+    @PostMapping("/{item-id}/comment")
+    public CommentDto addComment(@Valid @RequestBody CommentDto comment,
+                                 @RequestHeader("X-Sharer-User-Id") Integer userId,
+                                 @PathVariable("item-id") Integer itemId) {
+        return itemService.addComment(comment, userId, itemId);
+    }
 }

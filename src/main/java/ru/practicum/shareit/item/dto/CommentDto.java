@@ -13,9 +13,12 @@ public class CommentDto {
 
     private Integer id;
     private UserDto author;
+    private String authorName;
+    private Integer authorId;
     private int rating;
     @NotBlank
     private String text;
     private LocalDateTime created;
     private ItemDto item;
+    private Integer itemId;
 }

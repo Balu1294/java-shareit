@@ -25,20 +25,20 @@ public class BookingController {
     }
 
     @DeleteMapping("/{booking-id}")
-    public void removeBooking(@PathVariable("{booking-id}") Integer bookingId,
+    public void removeBooking(@PathVariable("booking-id") Integer bookingId,
                               @RequestHeader("X-Sharer-User-Id") Integer userId) {
         log.info("Поступил запрос на удаление бронирования с id: {}", bookingId);
         bookingService.removeBooking(bookingId, userId);
     }
 
     @GetMapping("/{booking-id}")
-    public BookingDto getBookingById(@PathVariable("{booking-Id}") Integer bookingId,
+    public BookingDto getBookingById(@PathVariable("booking-id") Integer bookingId,
                                      @RequestHeader("X-Sharer-User-Id") Integer userId) {
         return bookingService.getBookingById(bookingId, userId);
     }
 
     @PatchMapping("/{booking-id}")
-    public BookingDto setAproove(@PathVariable("{booking-id}") Integer bookingId,
+    public BookingDto setAproove(@PathVariable("booking-id") Integer bookingId,
                                  @RequestParam String approved,
                                  @RequestHeader("X-Sharer-User-Id") Integer userId) {
         log.info("Поступил запрос на подтверждение бронирования");

@@ -5,7 +5,6 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
@@ -23,6 +22,7 @@ public class ItemMapper {
                 nextBooking,
                 comments);
     }
+
     public static ItemDto toItemDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
@@ -33,6 +33,16 @@ public class ItemMapper {
                 .ownerId(item.getOwner().getId() != null ? item.getOwner().getId() : null)
                 .build();
     }
+
+//    public static ItemBookDto toItemBookDto(Item item, BookingDto lastBooking, BookingDto nextBooking, List<CommentDto> comments) {
+//        Integer itemId = item.getId();
+//        String name = item.getName();
+//        User owner = item.getOwner();
+//        String description = item.getDescription();
+//        Boolean available = item.getAvailable();
+//
+//        return new ItemBookDto(itemId, name, UserMapper.toUserDto(owner), description, available, lastBooking, nextBooking, comments);
+//    }
 
     public static Item toItem(ItemDto itemDto, User user) {
         return Item.builder()

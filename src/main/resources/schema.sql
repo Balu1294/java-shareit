@@ -27,7 +27,7 @@ start_date TIMESTAMP WITHOUT TIME zone not null,
 end_date TIMESTAMP WITHOUT TIME zone not null,
 item_id integer not null references items(id),
 booker_id integer not null references users(id),
-status varchar(15),
+status varchar(25),
 constraint pk_booking primary key (id)
 );
 
