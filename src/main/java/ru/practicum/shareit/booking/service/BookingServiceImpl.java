@@ -11,6 +11,7 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.exception.NotFoundItemException;
 import ru.practicum.shareit.item.exception.NotValidationException;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.exception.NotFoundUserException;
@@ -30,8 +31,22 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto createBooking(BookingDto bookingDto, Integer userId) {
         User user = checkUser(userId);
-        itemRepository.findById(bookingDto.getItem().getId()).orElseThrow(() -> new NotFoundItemException(String.format("Вещи с id: %d не существует", bookingDto.getItem().getId())));
-        Booking booking = bookingRepository.save(BookingMapper.toBooking(bookingDto, user));
+        Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow(() ->
+                new NotFoundItemException(String.format("Вещи с id: %d не существует", bookingDto.getItemId())));
+        if (item.getOwner() != null) {
+            if (item.getOwner().getId().equals(userId)) {
+                throw new NotFoundItemException("Пользователь выложивший вещь не может ее забронировать");
+            }
+        }
+
+        if (item.getAvailable().equals(false)) {
+            throw new NotValidationException("");
+        }
+
+        if (bookingDto.getStart().isAfter(bookingDto.getEnd()) || bookingDto.getStart().isEqual(bookingDto.getEnd())) {
+            throw new NotValidationException("");
+        }
+        Booking booking = bookingRepository.save(BookingMapper.toBooking(bookingDto, user, item));
         log.info("Бронирование с id: {} создано", booking.getId());
         return BookingMapper.toBookingDto(booking);
     }
@@ -39,23 +54,28 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void removeBooking(Integer bookingId, Integer userId) {
         User user = checkUser(userId);
-        Booking booking = BookingMapper.toBooking(getBookingById(bookingId, userId), user);
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(()-> new NotFoundBookingException(""));
         bookingRepository.delete(booking);
     }
 
     @Override
     public BookingDto getBookingById(Integer bookingId, Integer userId) {
         checkUser(userId);
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundBookingException(String.format("Бронирования с id: %d  не существует", bookingId)));
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
+                new NotFoundBookingException(String.format("Бронирования с id: %d  не существует", bookingId)));
+        if (!(booking.getItem().getOwner().getId().equals(userId) || booking.getBooker().getId().equals(userId))) {
+            throw new NotFoundUserException("Пользователь с id: " + userId + " не имеет доступа к бронированию с id: " + bookingId);
+        }
         return BookingMapper.toBookingDto(booking);
     }
 
     @Override
     public BookingDto setApprove(Integer bookingId, String approve, Integer userId) {
         User user = checkUser(userId);
-        Booking booking = BookingMapper.toBooking(getBookingById(bookingId, userId), user);
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
+                new NotFoundBookingException(String.format("Бронирования с id: %d  не существует", bookingId)));
         if (booking.getStatus().equals(Status.APPROVED)) {
-            throw new NotFoundBookingException(String.format("Бронирование с id: %d уже имеет статус APPROVED", bookingId));
+            throw new NotValidationException(String.format("Бронирование с id: %d уже имеет статус APPROVED", bookingId));
         }
         if (!booking.getItem().getOwner().getId().equals(userId)) {
             throw new NotFoundItemException(String.format("Пользователь с id: %d  не является владельцем вещи с id: %d",
@@ -74,8 +94,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getBookingByUser(Integer userId, String state) {
         LocalDateTime time = LocalDateTime.now();
-        checkUser(userId);
         List<Booking> bookings;
+        checkUser(userId);
         switch (state) {
             case "ALL":
                 bookings = bookingRepository.findAllByBookerIdOrderByEndDesc(userId);

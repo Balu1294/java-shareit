@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
@@ -15,19 +16,28 @@ public class BookingMapper {
     public static BookingDto toBookingDto(Booking booking) {
         return new BookingDto(booking.getId(),
                 UserMapper.toUserDto(booking.getBooker()),
+                UserMapper.toUserDto(booking.getBooker()).getId(),
                 ItemMapper.toItemDto(booking.getItem()),
+                booking.getItem().getId(),
+                booking.getItem().getName(),
                 booking.getStart(),
                 booking.getEnd(),
                 booking.getStatus());
     }
 
-    public static Booking toBooking(BookingDto bookingDto, User user) {
+    public static Booking toBooking(BookingDto bookingDto, User user, Item item) {
         return new Booking(bookingDto.getId(),
                 bookingDto.getStart(),
                 bookingDto.getEnd(),
-                ItemMapper.toItem(bookingDto.getItem(), user),
-                UserMapper.toUser(bookingDto.getBooker()),
+                item,
+                user,
                 bookingDto.getStatus());
+//        Integer id = bookingDto.getId();
+//        LocalDateTime start = bookingDto.getStart();
+//        LocalDateTime end = bookingDto.getEnd();
+//        Status status = bookingDto.getStatus();
+//
+//        return new Booking(id, start, end, item, user, status);
     }
 
     public static List<BookingDto> toBookingDtoList(List<Booking> bookings) {
