@@ -32,12 +32,6 @@ public class BookingMapper {
                 item,
                 user,
                 bookingDto.getStatus());
-//        Integer id = bookingDto.getId();
-//        LocalDateTime start = bookingDto.getStart();
-//        LocalDateTime end = bookingDto.getEnd();
-//        Status status = bookingDto.getStatus();
-//
-//        return new Booking(id, start, end, item, user, status);
     }
 
     public static List<BookingDto> toBookingDtoList(List<Booking> bookings) {

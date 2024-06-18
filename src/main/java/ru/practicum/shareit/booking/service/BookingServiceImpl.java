@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
@@ -23,10 +25,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BookingServiceImpl implements BookingService {
-    private final BookingRepository bookingRepository;
-    private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
+    BookingRepository bookingRepository;
+    UserRepository userRepository;
+    ItemRepository itemRepository;
 
     @Override
     public BookingDto createBooking(BookingDto bookingDto, Integer userId) {
@@ -40,11 +43,11 @@ public class BookingServiceImpl implements BookingService {
         }
 
         if (item.getAvailable().equals(false)) {
-            throw new NotValidationException("");
+            throw new NotValidationException(String.format("Вещь с id: %d недоступна для бронирования", item.getId()));
         }
 
         if (bookingDto.getStart().isAfter(bookingDto.getEnd()) || bookingDto.getStart().isEqual(bookingDto.getEnd())) {
-            throw new NotValidationException("");
+            throw new NotValidationException("Некорректное время старта или окончания");
         }
         Booking booking = bookingRepository.save(BookingMapper.toBooking(bookingDto, user, item));
         log.info("Бронирование с id: {} создано", booking.getId());
@@ -54,8 +57,9 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void removeBooking(Integer bookingId, Integer userId) {
         User user = checkUser(userId);
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(()-> new NotFoundBookingException(""));
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundBookingException(""));
         bookingRepository.delete(booking);
+        log.info("Бронирование с Id: {} удалено", bookingId);
     }
 
     @Override
@@ -66,6 +70,7 @@ public class BookingServiceImpl implements BookingService {
         if (!(booking.getItem().getOwner().getId().equals(userId) || booking.getBooker().getId().equals(userId))) {
             throw new NotFoundUserException("Пользователь с id: " + userId + " не имеет доступа к бронированию с id: " + bookingId);
         }
+        log.info("Бронирование получено");
         return BookingMapper.toBookingDto(booking);
     }
 

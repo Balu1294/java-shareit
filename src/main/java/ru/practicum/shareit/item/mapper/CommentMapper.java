@@ -23,6 +23,7 @@ public class CommentMapper {
                 ItemMapper.toItemDto(comment.getItem()),
                 ItemMapper.toItemDto(comment.getItem()).getId());
     }
+
     public static Comment toComment(CommentDto commentDto, User user, Item item) {
         return new Comment(commentDto.getId(),
                 commentDto.getText(),
@@ -31,6 +32,7 @@ public class CommentMapper {
                 commentDto.getRating(),
                 commentDto.getCreated());
     }
+
     public static List<CommentDto> toCommentDto(List<Comment> comments) {
         List<CommentDto> commentDtos = new ArrayList<>();
 

@@ -7,7 +7,6 @@ import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
@@ -30,11 +29,8 @@ public class Item {
     String description;
 
     @Column
-//    @NotNull
     Boolean available;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     User owner;
-//    @Column(name = "request_id", nullable = false)
-//    Integer requestId;
 }

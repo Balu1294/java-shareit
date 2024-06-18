@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -53,6 +52,7 @@ public class ItemController {
                                     @RequestParam("text") String text) {
         return itemService.search(text);
     }
+
     @PostMapping("/{item-id}/comment")
     public CommentDto addComment(@Valid @RequestBody CommentDto comment,
                                  @RequestHeader("X-Sharer-User-Id") Integer userId,
