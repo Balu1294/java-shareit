@@ -92,7 +92,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(Status.REJECTED);
         }
         bookingRepository.save(booking);
-        log.info("Статус для бронирования с id: {} изменен", bookingId);
+        log.info("Статус для бронирования с id: {} изменен.", bookingId);
         return BookingMapper.toBookingDto(booking);
     }
 
