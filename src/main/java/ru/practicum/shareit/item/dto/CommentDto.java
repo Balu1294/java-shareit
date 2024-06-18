@@ -24,5 +24,4 @@ public class CommentDto {
     LocalDateTime created;
     ItemDto item;
     Integer itemId;
-
 }

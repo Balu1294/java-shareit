@@ -74,8 +74,7 @@ public class ItemServiceImpl implements ItemService {
                 new NotFoundItemException(String.format("Вещи с id: %d не существует.", itemId)));
         ItemBookDto itemBookDto;
         List<Booking> bookings = bookingRepository.findAllByItemId(itemId);
-        List<CommentDto> comments = CommentMapper.toCommentDto(commentRepository.findAllCommentByItemId(itemId));
-
+        List<CommentDto> comments = CommentMapper.toCommentDto(commentRepository.findAllByItemId(itemId));
 
         if (item.getOwner().getId().equals(ownerId) && !bookings.isEmpty()) {
             Booking lastBooking = bookings.stream()

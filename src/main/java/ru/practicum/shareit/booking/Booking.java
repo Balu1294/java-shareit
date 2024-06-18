@@ -45,5 +45,4 @@ public class Booking implements Comparable<Booking> {
     public int compareTo(Booking booking) {
         return booking.getEnd().compareTo(this.end);
     }
-
 }

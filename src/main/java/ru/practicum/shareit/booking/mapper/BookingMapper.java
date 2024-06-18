@@ -38,5 +38,4 @@ public class BookingMapper {
         List<BookingDto> dtoList = bookings.stream().map(booking -> BookingMapper.toBookingDto(booking)).collect(Collectors.toList());
         return dtoList;
     }
-
 }
