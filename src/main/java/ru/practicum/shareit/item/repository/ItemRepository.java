@@ -9,6 +9,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     List<Item> findAllByAvailableAndDescriptionContainingIgnoreCaseOrNameContainingIgnoreCase(boolean available,
                                                                                               String description,
                                                                                               String name);
+
     List<Item> findAllByOwnerId(Integer userId);
 
 }

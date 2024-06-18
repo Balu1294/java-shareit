@@ -1,9 +1,11 @@
 package ru.practicum.shareit.booking;
 
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.enumStatus.Status;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -15,28 +17,29 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "bookings")
 public class Booking implements Comparable<Booking> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
     @NotNull
     @Column(name = "start_date", nullable = false)
-    private LocalDateTime start;
+    LocalDateTime start;
     @NotNull
     @Column(name = "end_date", nullable = false)
-    private LocalDateTime end;
+    LocalDateTime end;
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
-    private Item item;
+    Item item;
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booker_id", nullable = false)
-    private User booker;
+    User booker;
     @Enumerated(EnumType.ORDINAL)
-    private Status status;
+    Status status;
 
     @Override
     public int compareTo(Booking booking) {

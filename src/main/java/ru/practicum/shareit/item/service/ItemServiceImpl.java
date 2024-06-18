@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.enumStatus.Status;
@@ -30,11 +32,12 @@ import static ru.practicum.shareit.item.mapper.ItemMapper.toItemDto;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ItemServiceImpl implements ItemService {
-    private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
-    private final BookingRepository bookingRepository;
+    ItemRepository itemRepository;
+    UserRepository userRepository;
+    CommentRepository commentRepository;
+    BookingRepository bookingRepository;
 
     @Override
     public ItemDto createItem(Integer ownerId, ItemDto itemDto) {
@@ -46,9 +49,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(Integer ownerId, Integer itemId, ItemDto itemDto) {
-        User user = userRepository.findById(ownerId).orElseThrow(() ->
+        userRepository.findById(ownerId).orElseThrow(() ->
                 new NotFoundUserException(String.format("Пользователя с id: %d  не существует", ownerId)));
-//        Item item = ItemMapper.toItem(getItemById(ownerId, itemId), user);
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundItemException(""));
         if (itemDto.getId() != null) {
             item.setId(itemDto.getId());
@@ -59,9 +61,6 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getDescription() != null) {
             item.setDescription(itemDto.getDescription());
         }
-//        if (itemDto.getOwnerId() != null) {
-//            item.setOwnerId(itemDto.getOwnerId());
-//        }
         if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
@@ -99,7 +98,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemBookDto> getAllItems(Integer ownerId) {
-        User user = userRepository.findById(ownerId).orElseThrow(() -> new NotFoundUserException(""));
+        userRepository.findById(ownerId).orElseThrow(() -> new NotFoundUserException(""));
         List<Item> items = itemRepository.findAll();
         List<ItemBookDto> itemsfiltr = items.stream()
                 .filter(item -> item.getOwner().getId().equals(ownerId))

@@ -29,20 +29,9 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-//                .requestId(item.getRequestId() != null ? item.getRequestId() : null)
                 .ownerId(item.getOwner().getId() != null ? item.getOwner().getId() : null)
                 .build();
     }
-
-//    public static ItemBookDto toItemBookDto(Item item, BookingDto lastBooking, BookingDto nextBooking, List<CommentDto> comments) {
-//        Integer itemId = item.getId();
-//        String name = item.getName();
-//        User owner = item.getOwner();
-//        String description = item.getDescription();
-//        Boolean available = item.getAvailable();
-//
-//        return new ItemBookDto(itemId, name, UserMapper.toUserDto(owner), description, available, lastBooking, nextBooking, comments);
-//    }
 
     public static Item toItem(ItemDto itemDto, User user) {
         return Item.builder()
@@ -50,7 +39,6 @@ public class ItemMapper {
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable() != null ? itemDto.getAvailable() : null)
-//                .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
                 .owner(user)
                 .build();
     }

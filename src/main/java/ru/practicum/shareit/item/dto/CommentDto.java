@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.constraints.NotBlank;
@@ -9,16 +11,17 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentDto {
 
-    private Integer id;
-    private UserDto author;
-    private String authorName;
-    private Integer authorId;
-    private int rating;
+    Integer id;
+    UserDto author;
+    String authorName;
+    Integer authorId;
+    int rating;
     @NotBlank
-    private String text;
-    private LocalDateTime created;
-    private ItemDto item;
-    private Integer itemId;
+    String text;
+    LocalDateTime created;
+    ItemDto item;
+    Integer itemId;
 }

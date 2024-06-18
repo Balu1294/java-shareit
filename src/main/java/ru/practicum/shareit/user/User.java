@@ -5,7 +5,6 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
@@ -20,10 +19,8 @@ public class User {
     Integer id;
 
     @Column
-//    @NotBlank
     String name;
     @Column(unique = true)
-//    @NotBlank
     @Email
     String email;
 }
