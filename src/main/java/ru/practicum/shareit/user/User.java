@@ -23,4 +23,5 @@ public class User {
     @Column(unique = true)
     @Email
     String email;
+
 }

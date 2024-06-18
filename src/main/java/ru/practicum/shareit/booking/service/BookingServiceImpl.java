@@ -163,4 +163,5 @@ public class BookingServiceImpl implements BookingService {
     private User checkUser(Integer userId) {
         return userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(String.format("Пользователя с id: %d не существует", userId)));
     }
+
 }

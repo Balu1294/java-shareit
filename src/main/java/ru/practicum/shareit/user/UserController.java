@@ -49,4 +49,5 @@ public class UserController {
         log.info("Поступил запрос на удаление пользователя");
         userService.removeUser(id);
     }
+
 }

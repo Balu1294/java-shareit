@@ -58,4 +58,5 @@ public class UserServiceImpl implements UserService {
         User user = UserMapper.toUser(getUserById(id));
         userRepository.delete(user);
     }
+
 }

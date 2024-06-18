@@ -39,4 +39,5 @@ public class Comment {
 
     @Column(name = "time_of_creation")
     LocalDateTime timeOfCreation;
+
 }

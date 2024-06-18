@@ -50,4 +50,5 @@ public class ErrorHandler {
     public ErrorResponse handleNotFoundBookingException(final NotFoundBookingException e) {
         return new ErrorResponse(e.getMessage());
     }
+
 }

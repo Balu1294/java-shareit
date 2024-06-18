@@ -33,4 +33,5 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     User owner;
+
 }
