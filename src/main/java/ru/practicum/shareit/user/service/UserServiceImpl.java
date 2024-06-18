@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new NotFoundUserException(String.format("Пользователя с id: %d  не существует", id)));
+                new NotFoundUserException(String.format("Пользователя с id: %d  не существует.", id)));
         return UserMapper.toUserDto(user);
     }
 

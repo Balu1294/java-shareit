@@ -21,7 +21,7 @@ public class ItemController {
     @PostMapping
     public ItemDto itemCreate(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
                               @Valid @RequestBody ItemDto itemDto) {
-        log.info("Поступил запрос на создание вещи");
+        log.info("Поступил запрос на создание вещи.");
         return itemService.createItem(ownerId, itemDto);
     }
 

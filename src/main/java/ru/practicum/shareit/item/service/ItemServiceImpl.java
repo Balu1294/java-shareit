@@ -71,7 +71,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemBookDto getItemById(Integer ownerId, Integer itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundItemException(String.format("Вещи с id: %d не существует", itemId)));
+                new NotFoundItemException(String.format("Вещи с id: %d не существует.", itemId)));
         ItemBookDto itemBookDto;
         List<Booking> bookings = bookingRepository.findAllByItemId(itemId);
         List<CommentDto> comments = CommentMapper.toCommentDto(commentRepository.findAllCommentByItemId(itemId));

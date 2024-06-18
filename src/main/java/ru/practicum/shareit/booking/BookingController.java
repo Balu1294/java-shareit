@@ -19,7 +19,7 @@ public class BookingController {
     @PostMapping
     public BookingDto createBooking(@Valid @RequestBody BookingDto bookingDto,
                                     @RequestHeader("X-Sharer-User-Id") Integer userId) {
-        log.info("Поступил запрос на создание бронирования от пользователя с id: {}", userId);
+        log.info("Поступил запрос на создание бронирования от пользователя с id: {}.", userId);
         return bookingService.createBooking(bookingDto, userId);
     }
 

@@ -25,10 +25,10 @@ public class Booking implements Comparable<Booking> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     @NotNull
-    @Column(name = "start_date", nullable = false)
+    @Column(name = "start_date")
     LocalDateTime start;
     @NotNull
-    @Column(name = "end_date", nullable = false)
+    @Column(name = "end_date")
     LocalDateTime end;
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,7 +36,7 @@ public class Booking implements Comparable<Booking> {
     Item item;
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booker_id", nullable = false)
+    @JoinColumn(name = "booker_id")
     User booker;
     @Enumerated(EnumType.ORDINAL)
     Status status;

@@ -35,7 +35,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto createBooking(BookingDto bookingDto, Integer userId) {
         User user = checkUser(userId);
         Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow(() ->
-                new NotFoundItemException(String.format("Вещи с id: %d не существует", bookingDto.getItemId())));
+                new NotFoundItemException(String.format("Вещи с id: %d не существует.", bookingDto.getItemId())));
         if (item.getOwner() != null) {
             if (item.getOwner().getId().equals(userId)) {
                 throw new NotFoundItemException("Пользователь выложивший вещь не может ее забронировать");

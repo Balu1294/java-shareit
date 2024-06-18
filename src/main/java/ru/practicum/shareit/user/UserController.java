@@ -34,7 +34,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Integer id) {
-        log.info("Поступил запрос на получение пользователя по id");
+        log.info("Поступил запрос на получение пользователя по id.");
         return userService.getUserById(id);
     }
 
