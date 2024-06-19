@@ -38,7 +38,7 @@ public class Booking implements Comparable<Booking> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booker_id")
     User booker;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     Status status;
 
     @Override

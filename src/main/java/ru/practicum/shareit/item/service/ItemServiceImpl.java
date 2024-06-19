@@ -75,7 +75,6 @@ public class ItemServiceImpl implements ItemService {
         ItemBookDto itemBookDto;
         List<Booking> bookings = bookingRepository.findAllByItemId(itemId);
         List<CommentDto> comments = CommentMapper.toCommentDto(commentRepository.findAllByItemId(itemId));
-
         if (item.getOwner().getId().equals(ownerId) && !bookings.isEmpty()) {
             Booking lastBooking = bookings.stream()
                     .filter(booking -> booking.getStart().isBefore(LocalDateTime.now()) && !booking.getStatus().equals(Status.REJECTED))

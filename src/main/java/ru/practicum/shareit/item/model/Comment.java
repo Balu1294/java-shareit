@@ -31,7 +31,7 @@ public class Comment {
     Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_d")
+    @JoinColumn(name = "author_id")
     User author;
 
     @Column
