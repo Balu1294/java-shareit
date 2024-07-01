@@ -20,4 +20,5 @@ public class UserDto {
     @NotBlank
     @Email
     String email;
+
 }

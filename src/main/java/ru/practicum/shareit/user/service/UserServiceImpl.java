@@ -2,9 +2,14 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.exception.NotFoundUserException;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,29 +18,45 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public UserDto usercreate(UserDto userDto) {
-        return userRepository.usercreate(userDto);
+        User user = UserMapper.toUser(userDto);
+        user = userRepository.save(user);
+        return UserMapper.toUserDto(user);
     }
 
     @Override
+    @Transactional
     public UserDto userUpdate(Integer id, UserDto userDto) {
-        getUserById(id);
-        return userRepository.userUpdate(id, userDto);
+        User user = UserMapper.toUser(getUserById(id));
+        if (userDto.getName() != null) {
+            user.setName(userDto.getName());
+        }
+        if (userDto.getEmail() != null) {
+            user.setEmail(userDto.getEmail());
+        }
+        user = userRepository.save(user);
+        return UserMapper.toUserDto(user);
     }
 
     @Override
     public UserDto getUserById(Integer id) {
-        return userRepository.getUserById(id);
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new NotFoundUserException(String.format("Пользователя с id: %d  не существует.", id)));
+        return UserMapper.toUserDto(user);
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userRepository.getAllUsers();
+        List<User> users = userRepository.findAll();
+        return new ArrayList<>(UserMapper.toUserDtoList(users));
     }
 
     @Override
+    @Transactional
     public void removeUser(Integer id) {
-        getUserById(id);
-        userRepository.removeUser(id);
+        User user = UserMapper.toUser(getUserById(id));
+        userRepository.delete(user);
     }
+
 }

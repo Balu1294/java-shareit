@@ -3,19 +3,25 @@ package ru.practicum.shareit.user;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    @NotBlank
+
+    @Column
     String name;
-    @NotBlank
+    @Column(unique = true)
     @Email
     String email;
+
 }
