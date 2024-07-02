@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 public class RequestMapper {
     public static Request toRequest(RequestDto requestDto, User user) {
         return new Request(requestDto.getId(),
-                requestDto.getItemName(),
+                requestDto.getDescription(),
                 user,
-                requestDto.getTimeOfCreation());
+                requestDto.getCreated());
     }
 
     public static RequestDto toRequestDto(Request request) {
         return new RequestDto(request.getId(),
-                request.getItemName(),
+                request.getDescription(),
                 request.getRequestor().getId(),
                 request.getTimeOfCreation());
     }

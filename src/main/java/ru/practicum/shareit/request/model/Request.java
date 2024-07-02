@@ -16,16 +16,16 @@ import java.time.LocalDateTime;
 public class Request {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column
-    private String itemName;
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requestor_id")
     private User requestor;
 
-    @Column
+    @Column(name = "time_of_creation")
     private LocalDateTime timeOfCreation;
 }
