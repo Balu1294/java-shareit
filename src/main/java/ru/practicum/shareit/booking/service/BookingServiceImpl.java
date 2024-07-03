@@ -24,6 +24,8 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static ru.practicum.shareit.booking.mapper.BookingMapper.toBookingDto;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -53,15 +55,16 @@ public class BookingServiceImpl implements BookingService {
         }
         Booking booking = bookingRepository.save(BookingMapper.toBooking(bookingDto, user, item));
         log.info("Бронирование с id: {} создано", booking.getId());
-        return BookingMapper.toBookingDto(booking);
+        return toBookingDto(booking);
     }
 
     @Override
-    public void removeBooking(Integer bookingId, Integer userId) {
+    public BookingDto removeBooking(Integer bookingId, Integer userId) {
         User user = checkUser(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundBookingException(""));
         bookingRepository.delete(booking);
         log.info("Бронирование с Id: {} удалено", bookingId);
+        return toBookingDto(booking);
     }
 
     @Override
@@ -73,11 +76,11 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundUserException("Пользователь с id: " + userId + " не имеет доступа к бронированию с id: " + bookingId);
         }
         log.info("Бронирование получено");
-        return BookingMapper.toBookingDto(booking);
+        return toBookingDto(booking);
     }
 
     @Override
-    public BookingDto setApprove(Integer bookingId, String approve, Integer userId) {
+    public BookingDto setApprove(Integer bookingId, Boolean approve, Integer userId) {
         User user = checkUser(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new NotFoundBookingException(String.format("Бронирования с id: %d  не существует", bookingId)));
@@ -88,14 +91,14 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundItemException(String.format("Пользователь с id: %d  не является владельцем вещи с id: %d",
                     userId, booking.getItem().getId()));
         }
-        if (approve.equals("true")) {
+        if (approve.equals(true)) {
             booking.setStatus(Status.APPROVED);
         } else {
             booking.setStatus(Status.REJECTED);
         }
         bookingRepository.save(booking);
         log.info("Статус для бронирования с id: {} изменен.", bookingId);
-        return BookingMapper.toBookingDto(booking);
+        return toBookingDto(booking);
     }
 
     @Override
@@ -169,6 +172,7 @@ public class BookingServiceImpl implements BookingService {
         }
         return BookingMapper.toBookingDtoList(bookings);
     }
+
     private void validBooking(RequestBooking requestBooking) {
         if (requestBooking.getFrom() < 0) {
             throw new NotValidationException("Бронирование не прошло валидацию");

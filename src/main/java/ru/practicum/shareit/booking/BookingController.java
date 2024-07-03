@@ -27,10 +27,10 @@ public class BookingController {
     }
 
     @DeleteMapping("/{booking-id}")
-    public void removeBooking(@PathVariable("booking-id") Integer bookingId,
-                              @RequestHeader(HEADER_USER) Integer userId) {
+    public BookingDto removeBooking(@PathVariable("booking-id") Integer bookingId,
+                                    @RequestHeader(HEADER_USER) Integer userId) {
         log.info("Поступил запрос на удаление бронирования с id: {}", bookingId);
-        bookingService.removeBooking(bookingId, userId);
+        return bookingService.removeBooking(bookingId, userId);
     }
 
     @GetMapping("/{booking-id}")
@@ -41,7 +41,7 @@ public class BookingController {
 
     @PatchMapping("/{booking-id}")
     public BookingDto setAproove(@PathVariable("booking-id") Integer bookingId,
-                                 @RequestParam String approved,
+                                 @RequestParam Boolean approved,
                                  @RequestHeader(HEADER_USER) Integer userId) {
         log.info("Поступил запрос на подтверждение бронирования");
         return bookingService.setApprove(bookingId, approved, userId);
