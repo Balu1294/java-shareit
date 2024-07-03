@@ -14,6 +14,7 @@ import ru.practicum.shareit.booking.exception.NotFoundBookingException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.RequestBooking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.item.exception.NotFoundItemException;
 import ru.practicum.shareit.item.exception.NotValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -115,7 +116,7 @@ public class BookingServiceTest {
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
 
-        assertThrows(NotFoundBookingException.class, () -> bookingService.createBooking(toBookingDto(booking), ownerId));
+        assertThrows(NotFoundItemException.class, () -> bookingService.createBooking(toBookingDto(booking), ownerId));
     }
 
     @Test
@@ -187,7 +188,7 @@ public class BookingServiceTest {
 
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
 
-        assertThrows(NotFoundUserException.class, () -> bookingService.setApprove(bookingId, true, userId));
+        assertThrows(NotFoundItemException.class, () -> bookingService.setApprove(bookingId, true, userId));
     }
 
     @Test
@@ -240,7 +241,7 @@ public class BookingServiceTest {
         requestBooking.setState("CURRENT");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(booker));
-        when(bookingRepository.findAllByUserUserIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(any(),
+        when(bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(any(),
                 any(), any(), any())).thenReturn(bookings);
 
         assertEquals(foundBookings, bookingService.getBookingByUser(requestBooking));
@@ -249,85 +250,85 @@ public class BookingServiceTest {
     @Test
     public void getBookingForCurrentUserWhenStateIsPastReturnOneBooking() {
         Booking pastBooking = Booking.builder()
-                .bookingId(bookingId)
+                .id(bookingId)
                 .item(item)
-                .user(booker)
+                .booker(booker)
                 .status(Status.APPROVED)
-                .endTime(now.minusDays(2))
-                .startTime(now.minusDays(1))
+                .end(now.minusDays(2))
+                .start(now.minusDays(1))
                 .build();
 
         List<Booking> bookings = List.of(pastBooking);
-        List<BookingDto> foundBookings = List.of(toDto(pastBooking));
+        List<BookingDto> foundBookings = List.of(toBookingDto(pastBooking));
         requestBooking.setState("Past");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(booker));
-        when(bookingRepository.findAllByUserUserIdAndEndTimeIsBeforeOrderByEndTimeDesc(any(), any(), any())).thenReturn(bookings);
+        when(bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByEndDesc(any(), any(), any())).thenReturn(bookings);
 
-        assertEquals(foundBookings, bookingService.getBookingForCurrentUser(requestBooking));
+        assertEquals(foundBookings, bookingService.getBookingByUser(requestBooking));
     }
 
     @Test
     public void getBookingForCurrentUserWhenStateIsFutureReturnOneBooking() {
         Booking futureBooking = Booking.builder()
-                .bookingId(bookingId)
+                .id(bookingId)
                 .item(item)
-                .user(booker)
+                .booker(booker)
                 .status(Status.APPROVED)
-                .endTime(now.plusDays(2))
-                .startTime(now.plusDays(1))
+                .end(now.plusDays(2))
+                .start(now.plusDays(1))
                 .build();
 
         List<Booking> bookings = List.of(futureBooking);
-        List<BookingDto> foundBookings = List.of(toDto(futureBooking));
+        List<BookingDto> foundBookings = List.of(toBookingDto(futureBooking));
         requestBooking.setState("Future");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(booker));
-        when(bookingRepository.findAllByUserUserIdAndStartTimeIsAfterOrderByEndTimeDesc(any(), any(), any())).thenReturn(bookings);
+        when(bookingRepository.findAllByBookerIdAndStartIsAfterOrderByEndDesc(any(), any(), any())).thenReturn(bookings);
 
-        assertEquals(foundBookings, bookingService.getBookingForCurrentUser(requestBooking));
+        assertEquals(foundBookings, bookingService.getBookingByUser(requestBooking));
     }
 
     @Test
     public void getBookingForCurrentUserWhenStateIsWaitingReturnOneBooking() {
         Booking waitingBooking = Booking.builder()
-                .bookingId(bookingId)
+                .id(bookingId)
                 .item(item)
-                .user(booker)
+                .booker(booker)
                 .status(Status.WAITING)
-                .endTime(now.plusDays(2))
-                .startTime(now.plusDays(1))
+                .end(now.plusDays(2))
+                .start(now.plusDays(1))
                 .build();
 
         List<Booking> bookings = List.of(waitingBooking);
-        List<BookingDto> foundBookings = List.of(toDto(waitingBooking));
+        List<BookingDto> foundBookings = List.of(toBookingDto(waitingBooking));
         requestBooking.setState("Waiting");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(booker));
-        when(bookingRepository.findAllByUserUserIdAndStartTimeIsAfterAndStatusOrderByEndTimeDesc(any(), any(), any(), any())).thenReturn(bookings);
+        when(bookingRepository.findAllByBookerIdAndStartIsAfterAndStatusOrderByEndDesc(any(), any(), any(), any())).thenReturn(bookings);
 
-        assertEquals(foundBookings, bookingService.getBookingForCurrentUser(requestBooking));
+        assertEquals(foundBookings, bookingService.getBookingByUser(requestBooking));
     }
 
     @Test
     public void getBookingForCurrentUserWhenStateIsRejectedReturnOneBooking() {
         Booking rejectedBooking = Booking.builder()
-                .bookingId(bookingId)
+                .id(bookingId)
                 .item(item)
-                .user(booker)
+                .booker(booker)
                 .status(Status.REJECTED)
-                .endTime(now.plusDays(2))
-                .startTime(now.plusDays(1))
+                .end(now.plusDays(2))
+                .start(now.plusDays(1))
                 .build();
 
         List<Booking> bookings = List.of(rejectedBooking);
-        List<BookingDto> foundBookings = List.of(toDto(rejectedBooking));
+        List<BookingDto> foundBookings = List.of(toBookingDto(rejectedBooking));
         requestBooking.setState("REJECTED");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(booker));
-        when(bookingRepository.findAllByUserUserIdAndStatusOrderByEndTimeDesc(any(), any(), any())).thenReturn(bookings);
+        when(bookingRepository.findAllByBookerIdAndStatusOrderByEndDesc(any(), any(), any())).thenReturn(bookings);
 
-        assertEquals(foundBookings, bookingService.getBookingForCurrentUser(requestBooking));
+        assertEquals(foundBookings, bookingService.getBookingByUser(requestBooking));
     }
 
     @Test
@@ -336,18 +337,18 @@ public class BookingServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(booker));
 
-        assertThrows(NotValidStateException.class, () -> bookingService.getBookingForCurrentUser(requestBooking));
+        assertThrows(NotValidationException.class, () -> bookingService.getBookingByUser(requestBooking));
     }
 
     @Test
     public void getBookingForOwnerWhenStateIsAllReturnOneBooking() {
         List<Booking> bookings = List.of(booking);
-        List<BookingDto> foundBookings = List.of(toDto(booking));
+        List<BookingDto> foundBookings = List.of(toBookingDto(booking));
         requestBooking.setState("ALL");
         requestBooking.setUserId(ownerId);
 
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
-        when(bookingRepository.findAllBookingByOwnerId(any(), any())).thenReturn(bookings);
+        when(bookingRepository.findBookingByUserId(any(), any())).thenReturn(bookings);
 
         assertEquals(foundBookings, bookingService.getBookingForOwner(requestBooking));
     }
@@ -355,12 +356,12 @@ public class BookingServiceTest {
     @Test
     public void getBookingForOwnerWhenStateIsCurrentReturnOneBooking() {
         List<Booking> bookings = List.of(booking);
-        List<BookingDto> foundBookings = List.of(toDto(booking));
+        List<BookingDto> foundBookings = List.of(toBookingDto(booking));
         requestBooking.setState("CURRENT");
         requestBooking.setUserId(ownerId);
 
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
-        when(bookingRepository.findAllByItemUserUserIdAndStartTimeIsBeforeAndEndTimeIsAfterOrderByEndTimeDesc(any(),
+        when(bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(any(),
                 any(), any(), any())).thenReturn(bookings);
 
         assertEquals(foundBookings, bookingService.getBookingForOwner(requestBooking));
@@ -369,21 +370,21 @@ public class BookingServiceTest {
     @Test
     public void getBookingForOwnerWhenStateIsPastReturnOneBooking() {
         Booking pastBooking = Booking.builder()
-                .bookingId(bookingId)
+                .id(bookingId)
                 .item(item)
-                .user(booker)
+                .booker(booker)
                 .status(Status.APPROVED)
-                .endTime(now.minusDays(2))
-                .startTime(now.minusDays(1))
+                .end(now.minusDays(2))
+                .start(now.minusDays(1))
                 .build();
 
         List<Booking> bookings = List.of(pastBooking);
-        List<BookingDto> foundBookings = List.of(toDto(pastBooking));
+        List<BookingDto> foundBookings = List.of(toBookingDto(pastBooking));
         requestBooking.setState("Past");
         requestBooking.setUserId(ownerId);
 
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
-        when(bookingRepository.findAllByItemUserUserIdAndEndTimeIsBeforeOrderByEndTimeDesc(any(), any(), any())).thenReturn(bookings);
+        when(bookingRepository.findAllByItemOwnerIdAndEndIsBeforeOrderByEndDesc(any(), any(), any())).thenReturn(bookings);
 
         assertEquals(foundBookings, bookingService.getBookingForOwner(requestBooking));
     }
@@ -391,21 +392,21 @@ public class BookingServiceTest {
     @Test
     public void getBookingForOwnerWhenStateIsFutureReturnOneBooking() {
         Booking futureBooking = Booking.builder()
-                .bookingId(bookingId)
+                .id(bookingId)
                 .item(item)
-                .user(booker)
+                .booker(booker)
                 .status(Status.APPROVED)
-                .endTime(now.plusDays(2))
-                .startTime(now.plusDays(1))
+                .end(now.plusDays(2))
+                .start(now.plusDays(1))
                 .build();
 
         List<Booking> bookings = List.of(futureBooking);
-        List<BookingDto> foundBookings = List.of(toDto(futureBooking));
+        List<BookingDto> foundBookings = List.of(toBookingDto(futureBooking));
         requestBooking.setState("Future");
         requestBooking.setUserId(ownerId);
 
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
-        when(bookingRepository.findAllByItemUserUserIdAndStartTimeIsAfterOrderByEndTimeDesc(any(), any(), any())).thenReturn(bookings);
+        when(bookingRepository.findAllByItemOwnerIdAndStartIsAfterOrderByEndDesc(any(), any(), any())).thenReturn(bookings);
 
         assertEquals(foundBookings, bookingService.getBookingForOwner(requestBooking));
     }
@@ -413,21 +414,21 @@ public class BookingServiceTest {
     @Test
     public void getBookingForOwnerWhenStateIsWaitingReturnOneBooking() {
         Booking waitingBooking = Booking.builder()
-                .bookingId(bookingId)
+                .id(bookingId)
                 .item(item)
-                .user(booker)
+                .booker(booker)
                 .status(Status.WAITING)
-                .endTime(now.plusDays(2))
-                .startTime(now.plusDays(1))
+                .end(now.plusDays(2))
+                .start(now.plusDays(1))
                 .build();
 
         List<Booking> bookings = List.of(waitingBooking);
-        List<BookingDto> foundBookings = List.of(toDto(waitingBooking));
+        List<BookingDto> foundBookings = List.of(toBookingDto(waitingBooking));
         requestBooking.setState("Waiting");
         requestBooking.setUserId(ownerId);
 
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
-        when(bookingRepository.findAllByItemUserUserIdAndStartTimeIsAfterAndStatusOrderByEndTimeDesc(any(), any(), any(), any())).thenReturn(bookings);
+        when(bookingRepository.findAllByItemOwnerIdAndStartIsAfterAndStatusOrderByEndDesc(any(), any(), any(), any())).thenReturn(bookings);
 
         assertEquals(foundBookings, bookingService.getBookingForOwner(requestBooking));
     }
@@ -435,21 +436,21 @@ public class BookingServiceTest {
     @Test
     public void getBookingForOwnerWhenStateIsRejectedReturnOneBooking() {
         Booking rejectedBooking = Booking.builder()
-                .bookingId(bookingId)
+                .id(bookingId)
                 .item(item)
-                .user(booker)
+                .booker(booker)
                 .status(Status.REJECTED)
-                .endTime(now.plusDays(2))
-                .startTime(now.plusDays(1))
+                .end(now.plusDays(2))
+                .start(now.plusDays(1))
                 .build();
 
         List<Booking> bookings = List.of(rejectedBooking);
-        List<BookingDto> foundBookings = List.of(toDto(rejectedBooking));
+        List<BookingDto> foundBookings = List.of(toBookingDto(rejectedBooking));
         requestBooking.setState("REJECTED");
         requestBooking.setUserId(ownerId);
 
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
-        when(bookingRepository.findAllByItemUserUserIdAndStatusOrderByEndTimeDesc(any(), any(), any())).thenReturn(bookings);
+        when(bookingRepository.findAllByItemOwnerIdAndStatusOrderByEndDesc(any(), any(), any())).thenReturn(bookings);
 
         assertEquals(foundBookings, bookingService.getBookingForOwner(requestBooking));
     }

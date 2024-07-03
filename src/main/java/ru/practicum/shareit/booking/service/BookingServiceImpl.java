@@ -60,8 +60,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto removeBooking(Integer bookingId, Integer userId) {
-        User user = checkUser(userId);
+//        User user = checkUser(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundBookingException(""));
+        if (!userId.equals(booking.getBooker().getId())) {
+            throw new NotFoundUserException("Пользователь с id: " + userId + " не является владельцем бронирования с id: " + bookingId);
+        }
         bookingRepository.delete(booking);
         log.info("Бронирование с Id: {} удалено", bookingId);
         return toBookingDto(booking);
@@ -69,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto getBookingById(Integer bookingId, Integer userId) {
-        checkUser(userId);
+//        User user = checkUser(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new NotFoundBookingException(String.format("Бронирования с id: %d  не существует", bookingId)));
         if (!(booking.getItem().getOwner().getId().equals(userId) || booking.getBooker().getId().equals(userId))) {
@@ -81,7 +84,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto setApprove(Integer bookingId, Boolean approve, Integer userId) {
-        User user = checkUser(userId);
+//        User user = checkUser(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new NotFoundBookingException(String.format("Бронирования с id: %d  не существует", bookingId)));
         if (booking.getStatus().equals(Status.APPROVED)) {
@@ -183,6 +186,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private User checkUser(Integer userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(String.format("Пользователя с id: %d не существует", userId)));
+        return userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundUserException(String.format("Пользователя с id: %d не существует", userId)));
     }
 }

@@ -6,21 +6,24 @@ import ru.practicum.shareit.item.dto.ItemBookDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.shareit.user.mapper.UserMapper.toUserDto;
+
 public class ItemMapper {
-    public static ItemBookDto toItemBookDto(Item item, BookingDto lastBooking, BookingDto nextBooking, List<CommentDto> comments) {
-        return new ItemBookDto(item.getId(),
-                item.getName(),
-                UserMapper.toUserDto(item.getOwner()),
-                item.getDescription(),
-                item.getAvailable(),
-                lastBooking,
-                nextBooking,
-                comments);
+    public static ItemBookDto toItemBookDto(Item item) {
+        Integer itemId = item.getId();
+        String name = item.getName();
+        UserDto user = toUserDto(item.getOwner());
+        String description = item.getDescription();
+        Boolean available = item.getAvailable();
+        Integer itemRequestId = item.getRequestId();
+
+        return new ItemBookDto(itemId, name, user, description, available, itemRequestId);
     }
 
     public static ItemDto toItemDto(Item item) {
