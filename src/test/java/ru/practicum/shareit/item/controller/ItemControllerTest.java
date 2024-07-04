@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exception.NotFoundItemException;
+import ru.practicum.shareit.item.exception.NotValidationException;
 import ru.practicum.shareit.item.model.RequestItem;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -47,7 +48,7 @@ public class ItemControllerTest {
         itemId = 1;
         userDto = new UserDto(userId, "Jon Bon", "mail@mail.ru");
         itemBookDto = new ItemBookDto(itemId, "Отвертка", userDto, "Классная отвертка", true);
-        itemDto = new ItemDto(itemId, "Стремянка", "Высокая стремянка", true,  userDto.getId(),1);
+        itemDto = new ItemDto(itemId, "Стремянка", "Высокая стремянка", true, userDto.getId(), 1);
     }
 
     @Test
@@ -92,7 +93,7 @@ public class ItemControllerTest {
 
     @Test
     public void updateItemWhenInvokedMethodReturnUpdatedItem() {
-        ItemDto newItem = new ItemDto(1, "Updated Стремянка", "Updated Высокая стремянка",false, userDto.getId(),2);
+        ItemDto newItem = new ItemDto(1, "Updated Стремянка", "Updated Высокая стремянка", false, userDto.getId(), 2);
 
         when(itemService.updateItem(userId, itemId, newItem)).thenReturn(newItem);
 
@@ -109,7 +110,7 @@ public class ItemControllerTest {
 
     @Test
     public void updateItemWhenItemNotFoundThrowException() {
-        ItemDto newItem = new ItemDto(1, "Updated Стремянка", "Updated Высокая стремянка", false,userDto.getId(), 2);
+        ItemDto newItem = new ItemDto(1, "Updated Стремянка", "Updated Высокая стремянка", false, userDto.getId(), 2);
 
         when(itemService.updateItem(userId, itemId, newItem)).thenThrow(NotFoundItemException.class);
 
@@ -120,7 +121,7 @@ public class ItemControllerTest {
     public void addItemWhenMethodInvokedReturnItem() {
         when(itemService.createItem(userId, itemDto)).thenReturn(itemDto);
 
-        assertEquals(itemDto, itemController.itemCreate(userId,itemDto));
+        assertEquals(itemDto, itemController.itemCreate(userId, itemDto));
         verify(itemService).createItem(userId, itemDto);
     }
 
@@ -134,9 +135,9 @@ public class ItemControllerTest {
 
     @Test
     public void deleteItemWhenItemNotFoundThrowException() {
-        when(itemService.deleteItem(itemId, userId)).thenThrow(ItemNotFoundException.class);
+        when(itemService.deleteItem(itemId, userId)).thenThrow(NotFoundItemException.class);
 
-        assertThrows(ItemNotFoundException.class, () -> itemController.deleteItem(itemId, userId));
+        assertThrows(NotFoundItemException.class, () -> itemController.deleteItem(itemId, userId));
         verify(itemService).deleteItem(itemId, userId);
     }
 
@@ -145,9 +146,9 @@ public class ItemControllerTest {
         List<ItemDto> items = List.of(itemDto);
         RequestItem requestItem = RequestItem.of(userId, 0, 10, "text");
 
-        when(itemService.searchItem(requestItem)).thenReturn(items);
+        when(itemService.search(requestItem)).thenReturn(items);
 
-        List<ItemDto> foundItems = itemController.search("text", userId, 0, 10);
+        List<ItemDto> foundItems = itemController.searchItem(userId, "text", 0, 10);
 
         assertEquals(items, foundItems);
         assertEquals(1, foundItems.size());
@@ -158,9 +159,9 @@ public class ItemControllerTest {
         List<ItemDto> items = List.of();
         RequestItem requestItem = RequestItem.of(userId, 0, 10, "text");
 
-        when(itemService.searchItem(requestItem)).thenReturn(items);
+        when(itemService.search(requestItem)).thenReturn(items);
 
-        List<ItemDto> foundItems = itemController.search("text", userId, 0, 10);
+        List<ItemDto> foundItems = itemController.searchItem(userId, "text", 0, 10);
 
         assertEquals(items, foundItems);
         assertEquals(0, foundItems.size());
@@ -168,7 +169,7 @@ public class ItemControllerTest {
 
     @Test
     public void addCommentWhenMethodInvokedReturnComment() {
-        CommentDto commentDto = new CommentDto(1L, userDto, "Name", 1L, 1, "text",
+        CommentDto commentDto = new CommentDto(1, userDto, "Name", 1, 1, "text",
                 LocalDateTime.now(), itemDto, itemId);
 
         when(itemService.addComment(commentDto, userId, itemId)).thenReturn(commentDto);
@@ -178,11 +179,11 @@ public class ItemControllerTest {
 
     @Test
     public void addCommentWhenUserIsOwnerTheItemThrowException() {
-        CommentDto commentDto = new CommentDto(1L, userDto, "Name", 1L, 1, "text",
+        CommentDto commentDto = new CommentDto(1, userDto, "Name", 1, 1, "text",
                 LocalDateTime.now(), itemDto, itemId);
 
-        when(itemService.addComment(commentDto, userId, itemId)).thenThrow(CommentCreateException.class);
+        when(itemService.addComment(commentDto, userId, itemId)).thenThrow(NotValidationException.class);
 
-        assertThrows(CommentCreateException.class, () -> itemController.addComment(commentDto, userId, itemId));
+        assertThrows(NotValidationException.class, () -> itemController.addComment(commentDto, userId, itemId));
     }
 }

@@ -14,13 +14,13 @@ public interface ItemService {
 
     ItemBookDto getItemById(Integer ownerId, Integer itemId);
 
-    List<ItemBookDto> getAllItems(RequestItem requestItem);
+//    List<ItemBookDto> getAllItems(RequestItem requestItem);
 
-    List<ItemDto> search(String text);
+    List<ItemDto> search(RequestItem requestItem);
 
     CommentDto addComment(CommentDto commentDto, Integer userId, Integer itemId);
 
     List<ItemBookDto> getItemsForUser(RequestItem requestItem);
 
-
+    ItemDto deleteItem(Integer itemId, Integer userId);
 }

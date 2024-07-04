@@ -48,14 +48,22 @@ public class ItemController {
                                                @RequestParam(defaultValue = "0") int from,
                                                @RequestParam(defaultValue = "10") int size) {
         log.info("Поступил запрос на получение списка вещей пользователя с id= {}", ownerId);
-        List<ItemBookDto> items = itemService.getAllItems(RequestItem.of(ownerId, from, size));
+        List<ItemBookDto> items = itemService.getItemsForUser(RequestItem.of(ownerId, from, size));
         return items;
+    }
+
+    @DeleteMapping("/{item-id}")
+    public ItemDto deleteItem(@PathVariable("item-id") Integer itemId,
+                              @RequestHeader(HEADER_USER) Integer userId) {
+        return itemService.deleteItem(itemId, userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestHeader(HEADER_USER) Integer ownerId,
-                                    @RequestParam("text") String text) {
-        return itemService.search(text);
+                                    @RequestParam("text") String text,
+                                    @RequestParam(defaultValue = "0") int from,
+                                    @RequestParam(defaultValue = "10") int size) {
+        return itemService.search(RequestItem.of(ownerId, from, size, text));
     }
 
     @PostMapping("/{item-id}/comment")
