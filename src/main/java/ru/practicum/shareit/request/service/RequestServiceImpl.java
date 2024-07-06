@@ -35,7 +35,8 @@ public class RequestServiceImpl implements RequestService {
         User user = checkUser(userId);
 
         requestDto.setCreated(LocalDateTime.now());
-        Request request = requestRepository.save(toRequest(requestDto, user));
+        Request request = toRequest(requestDto, user);
+        requestRepository.save(request);
 
         return toRequestDto(request);
     }

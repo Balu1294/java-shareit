@@ -333,7 +333,6 @@ public class ItemServiceImplTest {
     public void updateItemWhenUserNotFoundThrowException() {
         int userId = 0;
         ItemDto newItem = new ItemDto();
-
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(toItem(itemBookDto, toUser(userDto))));
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
@@ -362,7 +361,7 @@ public class ItemServiceImplTest {
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(toItem(itemBookDto, toUser(userDto))));
         when(userRepository.findById(userId)).thenReturn(Optional.of(newUser));
 
-        assertThrows(NotFoundUserException.class, () -> itemService.updateItem(userId, itemId, newItem));
+        assertThrows(NotValidationException.class, () -> itemService.updateItem(userId, itemId, newItem));
         verify(itemRepository, never()).save(toItem(newItem, toUser(userDto)));
     }
 
@@ -383,7 +382,7 @@ public class ItemServiceImplTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundItemException.class, () -> itemService.createItem(userId, itemDto));
+        assertThrows(NotFoundUserException.class, () -> itemService.createItem(userId, itemDto));
         verify(itemRepository, never()).save(any());
     }
 
@@ -405,7 +404,7 @@ public class ItemServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(newUser));
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(toItem(itemDto, toUser(userDto))));
 
-        assertThrows(NotFoundUserException.class, () -> itemService.deleteItem(itemId, userId));
+        assertThrows(NotValidationException.class, () -> itemService.deleteItem(itemId, userId));
         verify(itemRepository, never()).delete(any());
     }
 
@@ -486,8 +485,8 @@ public class ItemServiceImplTest {
         when(bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByEndDesc(anyInt(), any()))
                 .thenReturn(bookings);
         when(commentRepository.save(any())).thenReturn(comment);
-
-        assertEquals(commentDto, itemService.addComment(commentDto, userId, itemId));
+        CommentDto commentDto1 = itemService.addComment(commentDto, userId, itemId);
+        assertEquals(commentDto, commentDto1);
     }
 
     @Test
@@ -500,7 +499,7 @@ public class ItemServiceImplTest {
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        assertThrows(NotFoundItemException.class, () -> itemService.addComment(commentDto, userId, itemId));
+        assertThrows(NotValidationException.class, () -> itemService.addComment(commentDto, userId, itemId));
     }
 
     @Test
@@ -515,6 +514,6 @@ public class ItemServiceImplTest {
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        assertThrows(NotFoundItemException.class, () -> itemService.addComment(commentDto, userId, itemId));
+        assertThrows(NotValidationException.class, () -> itemService.addComment(commentDto, userId, itemId));
     }
 }

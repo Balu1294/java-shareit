@@ -60,10 +60,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto removeBooking(Integer bookingId, Integer userId) {
-//        User user = checkUser(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundBookingException(""));
         if (!userId.equals(booking.getBooker().getId())) {
-            throw new NotFoundUserException("Пользователь с id: " + userId + " не является владельцем бронирования с id: " + bookingId);
+            throw new NotFoundUserException(String.format("Пользователь с id:%d не является владельцем бронирования с id: %d",
+                    userId, bookingId));
         }
         bookingRepository.delete(booking);
         log.info("Бронирование с Id: {} удалено", bookingId);
@@ -72,11 +72,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto getBookingById(Integer bookingId, Integer userId) {
-//        User user = checkUser(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new NotFoundBookingException(String.format("Бронирования с id: %d  не существует", bookingId)));
         if (!(booking.getItem().getOwner().getId().equals(userId) || booking.getBooker().getId().equals(userId))) {
-            throw new NotFoundUserException("Пользователь с id: " + userId + " не имеет доступа к бронированию с id: " + bookingId);
+            throw new NotFoundUserException(String.format("Пользователь с id: %d не имеет доступа к бронированию с id: %d",
+                    userId, bookingId));
         }
         log.info("Бронирование получено");
         return toBookingDto(booking);
@@ -84,7 +84,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto setApprove(Integer bookingId, Boolean approve, Integer userId) {
-//        User user = checkUser(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new NotFoundBookingException(String.format("Бронирования с id: %d  не существует", bookingId)));
         if (booking.getStatus().equals(Status.APPROVED)) {
@@ -109,7 +108,8 @@ public class BookingServiceImpl implements BookingService {
         Integer userId = requestBooking.getUserId();
         String state = requestBooking.getState().toUpperCase();
         validBooking(requestBooking);
-        PageRequest pageRequest = PageRequest.of(requestBooking.getFrom() / requestBooking.getSize(), requestBooking.getSize());
+        PageRequest pageRequest = PageRequest.of(requestBooking.getFrom() / requestBooking.getSize(),
+                requestBooking.getSize());
 
         LocalDateTime time = LocalDateTime.now();
         List<Booking> bookings;
@@ -119,7 +119,8 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findAllByBookerIdOrderByEndDesc(userId, pageRequest);
                 break;
             case "CURRENT":
-                bookings = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(userId, time, time, pageRequest);
+                bookings = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(userId, time,
+                        time, pageRequest);
                 break;
             case "PAST":
                 bookings = bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByEndDesc(userId, time, pageRequest);
@@ -128,10 +129,12 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findAllByBookerIdAndStartIsAfterOrderByEndDesc(userId, time, pageRequest);
                 break;
             case "WAITING":
-                bookings = bookingRepository.findAllByBookerIdAndStartIsAfterAndStatusOrderByEndDesc(userId, time, Status.valueOf(state), pageRequest);
+                bookings = bookingRepository.findAllByBookerIdAndStartIsAfterAndStatusOrderByEndDesc(userId, time,
+                        Status.valueOf(state), pageRequest);
                 break;
             case "REJECTED":
-                bookings = bookingRepository.findAllByBookerIdAndStatusOrderByEndDesc(userId, Status.valueOf(state), pageRequest);
+                bookings = bookingRepository.findAllByBookerIdAndStatusOrderByEndDesc(userId, Status.valueOf(state),
+                        pageRequest);
                 break;
             default:
                 throw new NotValidationException("Unknown state: " + state);
@@ -145,7 +148,8 @@ public class BookingServiceImpl implements BookingService {
         Integer userId = requestBooking.getUserId();
         String state = requestBooking.getState().toUpperCase();
         validBooking(requestBooking);
-        PageRequest pageRequest = PageRequest.of(requestBooking.getFrom() / requestBooking.getSize(), requestBooking.getSize());
+        PageRequest pageRequest = PageRequest.of(requestBooking.getFrom() / requestBooking.getSize(),
+                requestBooking.getSize());
         LocalDateTime time = LocalDateTime.now();
         checkUser(userId);
         List<Booking> bookings;
@@ -168,7 +172,8 @@ public class BookingServiceImpl implements BookingService {
                         Status.valueOf(state), pageRequest);
                 break;
             case "REJECTED":
-                bookings = bookingRepository.findAllByItemOwnerIdAndStatusOrderByEndDesc(userId, Status.valueOf(state), pageRequest);
+                bookings = bookingRepository.findAllByItemOwnerIdAndStatusOrderByEndDesc(userId, Status.valueOf(state),
+                        pageRequest);
                 break;
             default:
                 throw new NotValidationException("Unknown state: " + state);

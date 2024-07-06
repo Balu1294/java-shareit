@@ -11,6 +11,7 @@ import javax.validation.constraints.Positive;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDto {

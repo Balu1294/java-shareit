@@ -4,7 +4,6 @@ import ru.practicum.shareit.item.dto.ItemBookDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,14 +12,14 @@ import static ru.practicum.shareit.user.mapper.UserMapper.toUserDto;
 
 public class ItemMapper {
     public static ItemBookDto toItemBookDto(Item item) {
-        Integer itemId = item.getId();
-        String name = item.getName();
-        UserDto user = toUserDto(item.getOwner());
-        String description = item.getDescription();
-        Boolean available = item.getAvailable();
-        Integer itemRequestId = item.getRequestId();
-
-        return new ItemBookDto(itemId, name, user, description, available, itemRequestId);
+        return ItemBookDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .owner(toUserDto(item.getOwner()))
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .requestId(item.getRequestId())
+                .build();
     }
 
     public static ItemDto toItemDto(Item item) {
@@ -59,5 +58,4 @@ public class ItemMapper {
     public static List<ItemDto> toItemDtoList(List<Item> items) {
         return items.stream().map(item -> ItemMapper.toItemDto(item)).collect(Collectors.toList());
     }
-
 }

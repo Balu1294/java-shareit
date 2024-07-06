@@ -19,11 +19,14 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findBookingByUserId(Integer userId, PageRequest pageRequest);
 
     List<Booking> findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(Integer userId, LocalDateTime one,
-                                                                                  LocalDateTime two, PageRequest pageRequest);
+                                                                                  LocalDateTime two,
+                                                                                  PageRequest pageRequest);
 
-    List<Booking> findAllByItemOwnerIdAndEndIsBeforeOrderByEndDesc(Integer userId, LocalDateTime time, PageRequest pageRequest);
+    List<Booking> findAllByItemOwnerIdAndEndIsBeforeOrderByEndDesc(Integer userId, LocalDateTime time,
+                                                                   PageRequest pageRequest);
 
-    List<Booking> findAllByItemOwnerIdAndStartIsAfterOrderByEndDesc(Integer userId, LocalDateTime time, PageRequest pageRequest);
+    List<Booking> findAllByItemOwnerIdAndStartIsAfterOrderByEndDesc(Integer userId, LocalDateTime time,
+                                                                    PageRequest pageRequest);
 
     List<Booking> findAllByItemOwnerIdAndStartIsAfterAndStatusOrderByEndDesc(Integer userId, LocalDateTime time,
                                                                              Status status, PageRequest pageRequest);
@@ -32,15 +35,19 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByBookerIdOrderByEndDesc(Integer userId, PageRequest pageRequest);
 
-    List<Booking> findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(Integer userId, LocalDateTime one, LocalDateTime two, PageRequest pageRequest);
+    List<Booking> findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(Integer userId, LocalDateTime one,
+                                                                               LocalDateTime two, PageRequest pageRequest);
 
-    List<Booking> findAllByBookerIdAndEndIsBeforeOrderByEndDesc(Integer userId, LocalDateTime time, PageRequest pageRequest);
+    List<Booking> findAllByBookerIdAndEndIsBeforeOrderByEndDesc(Integer userId, LocalDateTime time,
+                                                                PageRequest pageRequest);
 
     List<Booking> findAllByBookerIdAndEndIsBeforeOrderByEndDesc(Integer userId, LocalDateTime time);
 
-    List<Booking> findAllByBookerIdAndStartIsAfterOrderByEndDesc(Integer userId, LocalDateTime time, PageRequest pageRequest);
+    List<Booking> findAllByBookerIdAndStartIsAfterOrderByEndDesc(Integer userId, LocalDateTime time,
+                                                                 PageRequest pageRequest);
 
-    List<Booking> findAllByBookerIdAndStartIsAfterAndStatusOrderByEndDesc(Integer userId, LocalDateTime time, Status status, PageRequest pageRequest);
+    List<Booking> findAllByBookerIdAndStartIsAfterAndStatusOrderByEndDesc(Integer userId, LocalDateTime time,
+                                                                          Status status, PageRequest pageRequest);
 
     List<Booking> findAllByBookerIdAndStatusOrderByEndDesc(Integer userId, Status status, PageRequest pageRequest);
 

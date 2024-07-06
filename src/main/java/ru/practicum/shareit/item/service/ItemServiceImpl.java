@@ -53,14 +53,20 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(Integer ownerId, Integer itemId, ItemDto itemDto) {
-        userRepository.findById(ownerId).orElseThrow(() ->
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+                new NotFoundItemException(String.format("Вещи с id:%d не существует", itemId)));
+        User user = userRepository.findById(ownerId).orElseThrow(() ->
                 new NotFoundUserException(String.format("Пользователя с id: %d  не существует", ownerId)));
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundItemException(""));
-        if (itemDto.getId() != null) {
-            item.setId(itemDto.getId());
+        if (!item.getOwner().getId().equals(user.getId())) {
+            throw new NotValidationException(String.format("Пользователь с id: %d не является владельцем вещи с id: %d",
+                    user.getId(), item.getId()));
         }
         if (itemDto.getName() != null) {
-            item.setName(itemDto.getName());
+            if (!itemDto.getName().isBlank()) {
+                item.setName(itemDto.getName());
+            } else {
+                throw new NotValidationException("Валидация по имени не пройдена");
+            }
         }
         if (itemDto.getDescription() != null) {
             item.setDescription(itemDto.getDescription());
@@ -68,9 +74,16 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
-//        item = itemRepository.save(item);
-        ItemDto itemDtoNew = toItemDto(item);
-        return itemDtoNew;
+        if (itemDto.getRequestId() != null) {
+            if (itemDto.getRequestId() > 0) {
+                item.setRequestId(itemDto.getRequestId());
+            } else {
+                throw new NotValidationException("Валидация по id запроса не пройдена");
+            }
+        }
+        itemDto.setId(itemId);
+        itemRepository.save(item);
+        return toItemDto(item);
     }
 
     @Override
@@ -121,23 +134,6 @@ public class ItemServiceImpl implements ItemService {
         return itemBookDtoList;
     }
 
-//    @Override
-//    public List<ItemBookDto> getAllItems(RequestItem requestItem) {
-//        Integer userId = requestItem.getUserId();
-//        PageRequest pageRequest = PageRequest.of(requestItem.getFrom() / requestItem.getSize(), requestItem.getSize());
-//
-////        List<Item> items = itemRepository.findAllByOwnerId(userId, pageRequest);
-//
-//
-//        userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(""));
-//        List<Item> items = itemRepository.findAll();
-//        List<ItemBookDto> itemsfiltr = items.stream()
-//                .filter(item -> item.getOwner().getId().equals(userId))
-//                .map(item -> getItemById(userId, item.getId()))
-//                .collect(Collectors.toList());
-//        return itemsfiltr;
-//    }
-
     @Override
     public List<ItemDto> search(RequestItem item) {
         String text = item.getText();
@@ -147,7 +143,8 @@ public class ItemServiceImpl implements ItemService {
             return new ArrayList<>();
         }
         List<Item> items = itemRepository
-                .findAllByAvailableAndDescriptionContainingIgnoreCaseOrNameContainingIgnoreCase(true, text, text, pageRequest);
+                .findAllByAvailableAndDescriptionContainingIgnoreCaseOrNameContainingIgnoreCase(true, text,
+                        text, pageRequest);
         return ItemMapper.toItemDtoList(items);
     }
 
@@ -181,7 +178,10 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() ->
                         new NotFoundItemException(String.format("Вещи с id: %d не существует", itemId)));
-//        checkOwner(user, item);
+        if (!item.getOwner().getId().equals(user.getId())) {
+            throw new NotValidationException(String.format("Пользователь с id: %d не является владельцем вещи с id: %d",
+                    user.getId(), item.getId()));
+        }
         itemRepository.delete(item);
         return toItemDto(item);
     }
