@@ -1,16 +1,19 @@
 package ru.practicum.shareit.item.model;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestItem {
 
-    private Integer userId;
-    private int from;
-    private int size;
-    private String text;
+    Integer userId;
+    int from;
+    int size;
+    String text;
 
     public static RequestItem of(Integer userId, int from, int size) {
         RequestItem item = new RequestItem();

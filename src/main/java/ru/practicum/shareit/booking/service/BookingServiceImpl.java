@@ -183,10 +183,12 @@ public class BookingServiceImpl implements BookingService {
 
     private void validBooking(RequestBooking requestBooking) {
         if (requestBooking.getFrom() < 0) {
-            throw new NotValidationException("Бронирование не прошло валидацию");
+            throw new NotValidationException(String.format("Запрос на бронирование от пользователя с id: %d не прошло валидацию." +
+                    "Поле from: %d недействительно", requestBooking.getUserId(), requestBooking.getFrom()));
         }
         if (requestBooking.getSize() < 0) {
-            throw new NotValidationException("Бронирование не прошло валидацию");
+            throw new NotValidationException(String.format("Запрос на бронирование от пользователя с id: %d не прошло валидацию." +
+                    "Поле size: %d недействительно", requestBooking.getUserId(), requestBooking.getSize()));
         }
     }
 

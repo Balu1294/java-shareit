@@ -35,5 +35,5 @@ public class Item {
     @JoinColumn(name = "owner_id")
     User owner;
     @Column(name = "request_id")
-    private Integer requestId;
+    Integer requestId;
 }

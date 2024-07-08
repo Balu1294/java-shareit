@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request.dto;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -11,14 +12,15 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(of = {"id"})
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestDto implements Comparable<RequestDto> {
 
-    private Integer id;
+    Integer id;
     @NotBlank
-    private String description;
-    private Integer authorId;
-    private LocalDateTime created;
-    private List<ResponseDto> items;
+    String description;
+    Integer authorId;
+    LocalDateTime created;
+    List<ResponseDto> items;
 
     public RequestDto(Integer id, String description, Integer authorId, LocalDateTime created) {
         this.id = id;

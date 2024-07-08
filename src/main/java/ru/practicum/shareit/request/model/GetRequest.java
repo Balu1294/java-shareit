@@ -1,12 +1,15 @@
 package ru.practicum.shareit.request.model;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class GetRequest {
-    private Integer userId;
-    private int from;
-    private int size;
+    Integer userId;
+    int from;
+    int size;
 
     public static GetRequest of(Integer userId, int from, int size) {
         GetRequest request = new GetRequest();
