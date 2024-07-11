@@ -12,6 +12,8 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.practicum.shareit.user.mapper.UserMapper.toUserDto;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -22,7 +24,7 @@ public class UserServiceImpl implements UserService {
     public UserDto usercreate(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
         user = userRepository.save(user);
-        return UserMapper.toUserDto(user);
+        return toUserDto(user);
     }
 
     @Override
@@ -35,15 +37,15 @@ public class UserServiceImpl implements UserService {
         if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
-        user = userRepository.save(user);
-        return UserMapper.toUserDto(user);
+        userRepository.save(user);
+        return toUserDto(user);
     }
 
     @Override
     public UserDto getUserById(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new NotFoundUserException(String.format("Пользователя с id: %d  не существует.", id)));
-        return UserMapper.toUserDto(user);
+        return toUserDto(user);
     }
 
     @Override
@@ -54,9 +56,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void removeUser(Integer id) {
+    public UserDto removeUser(Integer id) {
         User user = UserMapper.toUser(getUserById(id));
-        userRepository.delete(user);
+        userRepository.deleteById(id);
+        return toUserDto(user);
     }
 
 }

@@ -1,17 +1,17 @@
 package ru.practicum.shareit.item.dto;
 
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDto {
@@ -23,5 +23,6 @@ public class ItemDto {
     @NotNull
     Boolean available;
     Integer ownerId;
+    @Positive
     Integer requestId;
 }

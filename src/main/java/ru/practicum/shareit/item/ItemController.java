@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.RequestItem;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -43,16 +44,26 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemBookDto> getAllItemsByUser(@RequestHeader(HEADER_USER) Integer ownerId) {
+    public List<ItemBookDto> getAllItemsByUser(@RequestHeader(HEADER_USER) Integer ownerId,
+                                               @RequestParam(defaultValue = "0") int from,
+                                               @RequestParam(defaultValue = "10") int size) {
         log.info("Поступил запрос на получение списка вещей пользователя с id= {}", ownerId);
-        List<ItemBookDto> items = itemService.getAllItems(ownerId);
+        List<ItemBookDto> items = itemService.getItemsForUser(RequestItem.of(ownerId, from, size));
         return items;
+    }
+
+    @DeleteMapping("/{item-id}")
+    public ItemDto deleteItem(@PathVariable("item-id") Integer itemId,
+                              @RequestHeader(HEADER_USER) Integer userId) {
+        return itemService.deleteItem(itemId, userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestHeader(HEADER_USER) Integer ownerId,
-                                    @RequestParam("text") String text) {
-        return itemService.search(text);
+                                    @RequestParam("text") String text,
+                                    @RequestParam(defaultValue = "0") int from,
+                                    @RequestParam(defaultValue = "10") int size) {
+        return itemService.search(RequestItem.of(ownerId, from, size, text));
     }
 
     @PostMapping("/{item-id}/comment")
@@ -61,5 +72,4 @@ public class ItemController {
                                  @PathVariable("item-id") Integer itemId) {
         return itemService.addComment(comment, userId, itemId);
     }
-
 }
