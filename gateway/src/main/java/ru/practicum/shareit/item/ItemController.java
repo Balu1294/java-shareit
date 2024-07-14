@@ -25,7 +25,6 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getItemById(@PathVariable("itemId") Integer itemId,
                                               @RequestHeader(USER_HEADER) Integer userId) {
-        log.info("Get item {}, userId = {}", itemId, userId);
         return client.getItem(userId, itemId);
     }
 
@@ -33,7 +32,6 @@ public class ItemController {
     public ResponseEntity<Object> getItemsForUser(@RequestHeader(USER_HEADER) Integer userId,
                                                   @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                                   @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("Get items with userId = {}, from = {}, size = {}", userId, from, size);
         return client.getItems(userId, from, size);
     }
 
@@ -42,21 +40,18 @@ public class ItemController {
                                              @RequestBody ItemDto item,
                                              @RequestHeader(USER_HEADER) Integer userId) {
         checkValidItemForUpdate(item);
-        log.info("Update item {}, userId = {}", itemId, userId);
         return client.update(userId, item, itemId);
     }
 
     @PostMapping
     public ResponseEntity<Object> addItem(@Valid @RequestBody ItemDto item,
                                           @RequestHeader(USER_HEADER) Integer userId) {
-        log.info("Create item {}, userId = {}", item, userId);
         return client.add(userId, item);
     }
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<Object> deleteItem(@PathVariable Integer itemId,
                                              @RequestHeader(USER_HEADER) Integer userId) {
-        log.info("Delete item {}, userId = {}", itemId, userId);
         return client.delete(userId, itemId);
     }
 
@@ -65,7 +60,6 @@ public class ItemController {
                                          @RequestHeader(USER_HEADER) Integer userId,
                                          @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                          @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("Search items with text = {}, userId = {}, from = {}, size = {}", text, userId, from, size);
         return client.search(userId, from, size, text);
     }
 
@@ -73,14 +67,14 @@ public class ItemController {
     public ResponseEntity<Object> addComment(@Valid @RequestBody CommentDto comment,
                                              @RequestHeader(USER_HEADER) Integer userId,
                                              @PathVariable("itemId") Integer itemId) {
-        log.info("Create comment {}, userId = {}, for item {}", comment, userId, itemId);
         return client.addComment(userId, itemId, comment);
     }
 
     private void checkValidItemForUpdate(ItemDto item) {
         if (item.getName() != null) {
             if (item.getName().isBlank()) {
-                throw new NotValidException("Name");
+                throw new NotValidException(String.format("Вещь с id запроса: %d не прошла валидацию. У вещи отсутствует название",
+                        item.getRequestId()));
             }
         }
     }

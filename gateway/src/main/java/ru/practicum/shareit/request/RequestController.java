@@ -23,13 +23,11 @@ public class RequestController {
     @PostMapping
     public ResponseEntity<Object> addItemRequest(@Valid @RequestBody RequestDto itemRequest,
                                                  @RequestHeader(USER_HEADER) Integer userId) {
-        log.info("Create request {}", itemRequest);
         return client.add(userId, itemRequest);
     }
 
     @GetMapping
     public ResponseEntity<Object> getItemRequestsForUser(@RequestHeader(USER_HEADER) Integer userId) {
-        log.info("Get requests with userId = {}", userId);
         return client.getItemRequests(userId);
     }
 
@@ -37,21 +35,18 @@ public class RequestController {
     public ResponseEntity<Object> getItemRequestsPageable(@RequestHeader(USER_HEADER) Integer userId,
                                                           @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                                           @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("Get requests with userId = {}, from = {}, size = {}", userId, from, size);
         return client.getItemRequestsPageable(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getItemRequestById(@RequestHeader(USER_HEADER) Integer userId,
                                                      @Positive @PathVariable Integer requestId) {
-        log.info("Get request {}, userId = {}", requestId, userId);
         return client.getItemRequest(userId, requestId);
     }
 
     @DeleteMapping("/{requestId}")
     public ResponseEntity<Object> deleteItemRequest(@Positive @PathVariable("requestId") Integer requestId,
                                                     @RequestHeader(USER_HEADER) Integer userId) {
-        log.info("Delete request {}, userId = {}", requestId, userId);
         return client.delete(requestId, userId);
     }
 }
