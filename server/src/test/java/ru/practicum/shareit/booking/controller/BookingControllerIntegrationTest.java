@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.practicum.shareit.item.ItemController.HEADER_USER;
+import static ru.practicum.shareit.constant.Constant.HEADER_USER;
 
 @Transactional
 @AutoConfigureMockMvc

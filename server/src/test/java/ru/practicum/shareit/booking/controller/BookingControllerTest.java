@@ -25,7 +25,7 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.practicum.shareit.item.ItemController.HEADER_USER;
+import static ru.practicum.shareit.constant.Constant.HEADER_USER;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @WebMvcTest(controllers = BookingController.class)

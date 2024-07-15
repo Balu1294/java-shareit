@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
-import static ru.practicum.shareit.booking.BookingController.USER_HEADER;
+import static ru.practicum.shareit.contstant.Constant.USER_HEADER;
 
 public class BaseClient {
     protected final RestTemplate rest;

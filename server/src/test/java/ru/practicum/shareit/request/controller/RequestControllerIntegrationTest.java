@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.constant.Constant.HEADER_USER;
 
 @SpringBootTest(properties = "db.name = test")
 @AutoConfigureMockMvc
@@ -64,7 +65,7 @@ public class RequestControllerIntegrationTest {
     @SneakyThrows
     public void addItemRequestWhenInvokedMethodReturnRequest() {
         mvc.perform(post(URL)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .content(mapper.writeValueAsString(itemRequestDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -78,7 +79,7 @@ public class RequestControllerIntegrationTest {
     @SneakyThrows
     public void addItemRequestWhenUserNotFoundReturnRequest() {
         mvc.perform(post(URL)
-                        .header(ItemController.HEADER_USER, unknownUserId)
+                        .header(HEADER_USER, unknownUserId)
                         .content(mapper.writeValueAsString(itemRequestDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -90,7 +91,7 @@ public class RequestControllerIntegrationTest {
     @SneakyThrows
     public void getItemRequestsForUserWhenInvokedMethodReturnThreeRequestWithResponses() {
         mvc.perform(get(URL)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(3)))
                 .andExpect(jsonPath("$[0].id", is(3)))
@@ -105,7 +106,7 @@ public class RequestControllerIntegrationTest {
     @SneakyThrows
     public void getItemRequestsForUserWhenUserNotFoundReturnStatusIsNotFound() {
         mvc.perform(get(URL)
-                        .header(ItemController.HEADER_USER, unknownUserId))
+                        .header(HEADER_USER, unknownUserId))
                 .andExpect(status().isNotFound());
     }
 
@@ -115,7 +116,7 @@ public class RequestControllerIntegrationTest {
         int userIdWithoutRequests = 3;
 
         mvc.perform(get(URL)
-                        .header(ItemController.HEADER_USER, userIdWithoutRequests))
+                        .header(HEADER_USER, userIdWithoutRequests))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(0)));
     }
@@ -124,7 +125,7 @@ public class RequestControllerIntegrationTest {
     @SneakyThrows
     public void deleteItemRequestWhenInvokedMethodReturnRequest() {
         mvc.perform(delete(URL + "/{requestId}", requestId)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(requestId)));
     }
@@ -133,7 +134,7 @@ public class RequestControllerIntegrationTest {
     @SneakyThrows
     public void deleteItemRequestWhenRequestNotFoundReturnStatusNotFound() {
         mvc.perform(delete(URL + "/{requestId}", unknownRequestId)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isNotFound());
     }
 
@@ -143,7 +144,7 @@ public class RequestControllerIntegrationTest {
         int notOwnerId = 3;
 
         mvc.perform(delete(URL + "/{requestId}", unknownRequestId)
-                        .header(ItemController.HEADER_USER, notOwnerId))
+                        .header(HEADER_USER, notOwnerId))
                 .andExpect(status().isNotFound());
     }
 
@@ -153,7 +154,7 @@ public class RequestControllerIntegrationTest {
         int userWithoutRequests = 1;
 
         mvc.perform(get(URL + "/all")
-                        .header(ItemController.HEADER_USER, userWithoutRequests)
+                        .header(HEADER_USER, userWithoutRequests)
                         .queryParam("from", "0")
                         .queryParam("size", "10"))
                 .andExpect(status().isOk())
@@ -166,7 +167,7 @@ public class RequestControllerIntegrationTest {
         int userWithoutRequests = 1;
 
         mvc.perform(get(URL + "/all")
-                        .header(ItemController.HEADER_USER, userWithoutRequests)
+                        .header(HEADER_USER, userWithoutRequests)
                         .queryParam("from", "0")
                         .queryParam("size", "2"))
                 .andExpect(status().isOk())
@@ -177,7 +178,7 @@ public class RequestControllerIntegrationTest {
     @SneakyThrows
     public void getItemRequestsPageableWhenUserNotFoundReturnStatusNotFound() {
         mvc.perform(get(URL + "/all")
-                        .header(ItemController.HEADER_USER, unknownUserId)
+                        .header(HEADER_USER, unknownUserId)
                         .queryParam("from", "0")
                         .queryParam("size", "10"))
                 .andExpect(status().isNotFound());
@@ -187,7 +188,7 @@ public class RequestControllerIntegrationTest {
     @SneakyThrows
     public void getItemRequestByIdWhenInvokedMethodReturnRequest() {
         mvc.perform(get(URL + "/{requestId}", requestId)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is((int) requestId)))
                 .andExpect(jsonPath("$.items.length()", is(2)));
@@ -197,7 +198,7 @@ public class RequestControllerIntegrationTest {
     @SneakyThrows
     public void getItemRequestByIdWhenRequestNotFoundReturnStatusIsNotFound() {
         mvc.perform(get(URL + "/{requestId}", unknownRequestId)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isNotFound());
     }
 
@@ -207,7 +208,7 @@ public class RequestControllerIntegrationTest {
         int requestIdWithoutResponse = 3;
 
         mvc.perform(get(URL + "/{requestId}", requestIdWithoutResponse)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is((int) requestIdWithoutResponse)))
                 .andExpect(jsonPath("$.items.length()", is(0)));

@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.constant.Constant.HEADER_USER;
 
 @Transactional
 @AutoConfigureMockMvc
@@ -108,7 +109,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void getItemByIdWhenMethodInvokedReturnItem() {
         mvc.perform(get(URL + "/{itemId}", itemId)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(itemId)))
                 .andExpect(jsonPath("$.name", is(itemBookDto.getName())))
@@ -121,7 +122,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void getItemByIdWhenItemNotFoundReturnStatusNotFound() {
         mvc.perform(get(URL + "/{itemId}", unknownItemId)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isNotFound());
     }
 
@@ -129,7 +130,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void getItemsForUserWhenFoundThreeReturnListWithThreeItems() {
         mvc.perform(get(URL)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(3)));
     }
@@ -138,7 +139,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void getItemsForUserWhenFoundThreeItemsAndSizeIsOneReturnListWithOneItem() {
         mvc.perform(get(URL)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .queryParam("size", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(1)));
@@ -148,7 +149,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void getItemsForUserWhenFoundThreeItemsAndFromIsOneAndSizeIs2ReturnListWithTwoItems() {
         mvc.perform(get(URL)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .queryParam("size", "2")
                         .queryParam("from", "1"))
                 .andDo(print())
@@ -160,7 +161,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void getItemsForUserWhenItemsNotFoundReturnEmptyList() {
         mvc.perform(get(URL)
-                        .header(ItemController.HEADER_USER, newUserId))
+                        .header(HEADER_USER, newUserId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(0)));
     }
@@ -173,7 +174,7 @@ public class ItemControllerIntegrationTest {
                 .build();
 
         mvc.perform(patch(URL + "/{itemId}", itemId)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .content(mapper.writeValueAsString(updateItem))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -194,7 +195,7 @@ public class ItemControllerIntegrationTest {
                 .build();
 
         mvc.perform(patch(URL + "/{itemId}", itemId)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .content(mapper.writeValueAsString(updateItem))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -210,7 +211,7 @@ public class ItemControllerIntegrationTest {
                 .build();
 
         mvc.perform(patch(URL + "/{itemId}", itemId)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .content(mapper.writeValueAsString(updateItem))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -231,7 +232,7 @@ public class ItemControllerIntegrationTest {
                 .build();
 
         mvc.perform(patch(URL + "/{itemId}", itemId)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .content(mapper.writeValueAsString(updateItem))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -252,7 +253,7 @@ public class ItemControllerIntegrationTest {
                 .build();
 
         mvc.perform(patch(URL + "/{itemId}", unknownItemId)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .content(mapper.writeValueAsString(updateItem))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -264,7 +265,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void addItemWhenUserNotFoundReturnStatusIsNotFound() {
         mvc.perform(post(URL)
-                        .header(ItemController.HEADER_USER, unknownUserId)
+                        .header(HEADER_USER, unknownUserId)
                         .content(mapper.writeValueAsString(itemDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -278,7 +279,7 @@ public class ItemControllerIntegrationTest {
         itemDto.setName("");
 
         mvc.perform(post(URL)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .content(mapper.writeValueAsString(itemDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -292,7 +293,7 @@ public class ItemControllerIntegrationTest {
         itemDto.setDescription("");
 
         mvc.perform(post(URL)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .content(mapper.writeValueAsString(itemDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -306,7 +307,7 @@ public class ItemControllerIntegrationTest {
         itemDto.setRequestId(-1);
 
         mvc.perform(post(URL)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .content(mapper.writeValueAsString(itemDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -318,7 +319,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void deleteItemWhenInvokedMethodReturnItem() {
         mvc.perform(delete(URL + "/{itemId}", itemId)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(itemId)))
                 .andExpect(jsonPath("$.name", is(itemDto.getName())))
@@ -331,7 +332,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void deleteItemWhenItemNotFoundReturnStatusIsNotFound() {
         mvc.perform(delete(URL + "/{itemId}", unknownItemId)
-                        .header(ItemController.HEADER_USER, userId))
+                        .header(HEADER_USER, userId))
                 .andExpect(status().isNotFound());
     }
 
@@ -339,7 +340,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void searchWhenFoundOneItemReturnListWithOneItem() {
         mvc.perform(get(URL + "/search")
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .queryParam("text", "Отвертка"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(1)))
@@ -354,7 +355,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void searchWhenNotFoundItemsReturnEmptyList() {
         mvc.perform(get(URL + "/search")
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .queryParam("text", "Стремянка"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(0)));
@@ -364,7 +365,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void searchWhenFoundTwoItemsAndSizeIsOneReturnListWithOneItem() {
         mvc.perform(get(URL + "/search")
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .queryParam("text", "Отвертка")
                         .queryParam("size", "1"))
                 .andExpect(status().isOk())
@@ -380,7 +381,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void addCommentWhenInvokedMethodReturnComment() {
         mvc.perform(post(URL + "/{itemId}/comment", itemId)
-                        .header(ItemController.HEADER_USER, newUserId)
+                        .header(HEADER_USER, newUserId)
                         .content(mapper.writeValueAsString(commentDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -395,7 +396,7 @@ public class ItemControllerIntegrationTest {
     @SneakyThrows
     public void addCommentWhenUserIsOwnerTheItemReturnStatusIs() {
         mvc.perform(post(URL + "/{itemId}/comment", itemId)
-                        .header(ItemController.HEADER_USER, userId)
+                        .header(HEADER_USER, userId)
                         .content(mapper.writeValueAsString(commentDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -409,7 +410,7 @@ public class ItemControllerIntegrationTest {
         int userIdWithoutBooking = 3;
 
         mvc.perform(post(URL + "/{itemId}/comment", itemId)
-                        .header(ItemController.HEADER_USER, userIdWithoutBooking)
+                        .header(HEADER_USER, userIdWithoutBooking)
                         .content(mapper.writeValueAsString(commentDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
