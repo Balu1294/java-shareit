@@ -51,21 +51,9 @@ public class BookingControllerTest {
         userId = 1;
         bookingId = 1;
 
-        bookingDto = BookingDto.builder()
-                .id(bookingId)
-                .itemName("Отвертка")
-                .bookerId(userId)
-                .itemId(1)
-                .start(LocalDateTime.now().plusHours(1))
-                .end(LocalDateTime.now().plusHours(2))
-                .build();
+        bookingDto = BookingDto.builder().id(bookingId).itemName("Отвертка").bookerId(userId).itemId(1).start(LocalDateTime.now().plusHours(1)).end(LocalDateTime.now().plusHours(2)).build();
 
-        requestBooking = requestBooking.builder()
-                .userId(1)
-                .state("true")
-                .size(10)
-                .from(0)
-                .build();
+        requestBooking = RequestBooking.builder().userId(1).state("true").size(10).from(0).build();
     }
 
     @Test
@@ -73,13 +61,7 @@ public class BookingControllerTest {
     public void addBookingWhenInvokedMethodReturnBooking() {
         when(bookingService.createBooking(bookingDto, userId)).thenReturn(bookingDto);
 
-        mvc.perform(post(URL)
-                        .header(HEADER_USER, userId)
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+        mvc.perform(post(URL).header(HEADER_USER, userId).content(mapper.writeValueAsString(bookingDto)).characterEncoding(StandardCharsets.UTF_8).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
@@ -87,13 +69,7 @@ public class BookingControllerTest {
     public void addBookingWhenInvokedMethodReturnStatusIsNotFound() {
         when(bookingService.createBooking(bookingDto, userId)).thenThrow(NotFoundUserException.class);
 
-        mvc.perform(post(URL)
-                        .header(HEADER_USER, userId)
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        mvc.perform(post(URL).header(HEADER_USER, userId).content(mapper.writeValueAsString(bookingDto)).characterEncoding(StandardCharsets.UTF_8).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -101,13 +77,7 @@ public class BookingControllerTest {
     public void deleteBookingWhenInvokedMethodReturnBooking() {
         when(bookingService.removeBooking(bookingId, userId)).thenReturn(bookingDto);
 
-        mvc.perform(delete(URL + "/{bookingId}", bookingId)
-                        .header(HEADER_USER, userId)
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+        mvc.perform(delete(URL + "/{bookingId}", bookingId).header(HEADER_USER, userId).content(mapper.writeValueAsString(bookingDto)).characterEncoding(StandardCharsets.UTF_8).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
@@ -115,13 +85,7 @@ public class BookingControllerTest {
     public void deleteBookingWhenBookingNotFoundReturnStatusIsNotFound() {
         when(bookingService.removeBooking(bookingId, userId)).thenThrow(NotFoundBookingException.class);
 
-        mvc.perform(delete(URL + "/{bookingId}", bookingId)
-                        .header(HEADER_USER, userId)
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        mvc.perform(delete(URL + "/{bookingId}", bookingId).header(HEADER_USER, userId).content(mapper.writeValueAsString(bookingDto)).characterEncoding(StandardCharsets.UTF_8).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -129,13 +93,7 @@ public class BookingControllerTest {
     public void getBookingByIdWhenInvokedMethodReturnBooking() {
         when(bookingService.getBookingById(bookingId, userId)).thenReturn(bookingDto);
 
-        mvc.perform(get(URL + "/{bookingId}", bookingId)
-                        .header(HEADER_USER, userId)
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+        mvc.perform(get(URL + "/{bookingId}", bookingId).header(HEADER_USER, userId).content(mapper.writeValueAsString(bookingDto)).characterEncoding(StandardCharsets.UTF_8).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
@@ -143,10 +101,7 @@ public class BookingControllerTest {
     public void setApproveWhenInvokedMethodReturnBooking() {
         when(bookingService.setApprove(bookingId, true, userId)).thenReturn(bookingDto);
 
-        mvc.perform(patch(URL + "/{bookingId}", bookingId)
-                        .queryParam("approved", "true")
-                        .header(HEADER_USER, userId))
-                .andExpect(status().isOk());
+        mvc.perform(patch(URL + "/{bookingId}", bookingId).queryParam("approved", "true").header(HEADER_USER, userId)).andExpect(status().isOk());
     }
 
     @Test
@@ -154,10 +109,7 @@ public class BookingControllerTest {
     public void setApproveWhenBookingNotFoundReturnStatusIsNotFound() {
         when(bookingService.setApprove(bookingId, true, userId)).thenThrow(NotFoundBookingException.class);
 
-        mvc.perform(patch(URL + "/{bookingId}", bookingId)
-                        .queryParam("approved", "true")
-                        .header("X-Sharer-User-Id", userId))
-                .andExpect(status().isNotFound());
+        mvc.perform(patch(URL + "/{bookingId}", bookingId).queryParam("approved", "true").header("X-Sharer-User-Id", userId)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -165,12 +117,7 @@ public class BookingControllerTest {
     public void getBookingForCurrentUserWhenInvokedMethodReturnOneBooking() {
         when(bookingService.getBookingByUser(requestBooking)).thenReturn(List.of(bookingDto));
 
-        mvc.perform(get(URL)
-                        .queryParam("state", "ALL")
-                        .queryParam("from", "0")
-                        .queryParam("size", "10")
-                        .header("X-Sharer-User-Id", userId))
-                .andExpect(status().isOk());
+        mvc.perform(get(URL).queryParam("state", "ALL").queryParam("from", "0").queryParam("size", "10").header("X-Sharer-User-Id", userId)).andExpect(status().isOk());
     }
 
     @Test
@@ -178,11 +125,6 @@ public class BookingControllerTest {
     public void getBookingForOwnerWhenInvokedMethodReturnOneBooking() {
         when(bookingService.getBookingForOwner(requestBooking)).thenReturn(List.of(bookingDto));
 
-        mvc.perform(get(URL)
-                        .queryParam("state", "ALL")
-                        .queryParam("from", "0")
-                        .queryParam("size", "10")
-                        .header("X-Sharer-User-Id", userId))
-                .andExpect(status().isOk());
+        mvc.perform(get(URL).queryParam("state", "ALL").queryParam("from", "0").queryParam("size", "10").header("X-Sharer-User-Id", userId)).andExpect(status().isOk());
     }
 }
