@@ -10,6 +10,9 @@ import ru.practicum.shareit.NotValidException;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
+import static ru.practicum.shareit.contstant.Constant.USER_ID;
+import static ru.practicum.shareit.contstant.Constant.USER_ID_PATH;
+
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
@@ -17,10 +20,11 @@ import javax.validation.constraints.Positive;
 @Slf4j
 public class UserController {
 
+
     private final UserClient client;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<Object> getUserById(@Positive @PathVariable("userId") Integer userId) {
+    @GetMapping(USER_ID_PATH)
+    public ResponseEntity<Object> getUserById(@Positive @PathVariable(USER_ID) Integer userId) {
         return client.getUser(userId);
     }
 
@@ -34,14 +38,15 @@ public class UserController {
         return client.add(user);
     }
 
-    @PatchMapping("/{userId}")
-    public ResponseEntity<Object> updateUser(@RequestBody UserDto user, @Positive @PathVariable("userId") Integer userId) {
+    @PatchMapping(USER_ID_PATH)
+    public ResponseEntity<Object> updateUser(@RequestBody UserDto user,
+                                             @Positive @PathVariable(USER_ID) Integer userId) {
         checkValidUserForUpdate(user);
         return client.update(userId, user);
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Object> deleteUser(@Positive @PathVariable("userId") Integer userId) {
+    @DeleteMapping(USER_ID_PATH)
+    public ResponseEntity<Object> deleteUser(@Positive @PathVariable(USER_ID) Integer userId) {
         return client.delete(userId);
     }
 

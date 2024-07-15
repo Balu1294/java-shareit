@@ -9,6 +9,9 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
+import static ru.practicum.shareit.constant.Constant.USER_ID;
+import static ru.practicum.shareit.constant.Constant.USER_ID_PATH;
+
 
 @RestController
 @RequestMapping(path = "/users")
@@ -24,15 +27,15 @@ public class UserController {
         return userService.usercreate(userDto);
     }
 
-    @PatchMapping("/{id}")
-    public UserDto userUpdate(@PathVariable Integer id,
+    @PatchMapping(USER_ID_PATH)
+    public UserDto userUpdate(@PathVariable(USER_ID) Integer id,
                               @RequestBody UserDto userDto) {
         log.info("Поступил запрос на обновлении данных о пользователе");
         return userService.userUpdate(id, userDto);
     }
 
-    @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Integer id) {
+    @GetMapping(USER_ID_PATH)
+    public UserDto getUserById(@PathVariable(USER_ID) Integer id) {
         log.info("Поступил запрос на получение пользователя по id.");
         return userService.getUserById(id);
     }
@@ -43,8 +46,8 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @DeleteMapping("/{id}")
-    public void removeUser(@PathVariable Integer id) {
+    @DeleteMapping(USER_ID_PATH)
+    public void removeUser(@PathVariable(USER_ID) Integer id) {
         log.info("Поступил запрос на удаление пользователя");
         userService.removeUser(id);
     }

@@ -9,13 +9,14 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import java.util.List;
 
-import static ru.practicum.shareit.item.ItemController.HEADER_USER;
+import static ru.practicum.shareit.constant.Constant.*;
 
 @RestController
 @RequestMapping(path = "/bookings")
 @AllArgsConstructor
 @Slf4j
 public class BookingController {
+
     private final BookingService bookingService;
 
     @PostMapping
@@ -25,21 +26,21 @@ public class BookingController {
         return bookingService.createBooking(bookingDto, userId);
     }
 
-    @DeleteMapping("/{booking-id}")
-    public BookingDto removeBooking(@PathVariable("booking-id") Integer bookingId,
+    @DeleteMapping(BOOKING_ID_PATH)
+    public BookingDto removeBooking(@PathVariable(BOOKING_ID) Integer bookingId,
                                     @RequestHeader(HEADER_USER) Integer userId) {
         log.info("Поступил запрос на удаление бронирования с id: {}", bookingId);
         return bookingService.removeBooking(bookingId, userId);
     }
 
-    @GetMapping("/{booking-id}")
-    public BookingDto getBookingById(@PathVariable("booking-id") Integer bookingId,
+    @GetMapping(BOOKING_ID_PATH)
+    public BookingDto getBookingById(@PathVariable(BOOKING_ID) Integer bookingId,
                                      @RequestHeader(HEADER_USER) Integer userId) {
         return bookingService.getBookingById(bookingId, userId);
     }
 
-    @PatchMapping("/{booking-id}")
-    public BookingDto setAproove(@PathVariable("booking-id") Integer bookingId,
+    @PatchMapping(BOOKING_ID_PATH)
+    public BookingDto setAproove(@PathVariable(BOOKING_ID) Integer bookingId,
                                  @RequestParam Boolean approved,
                                  @RequestHeader(HEADER_USER) Integer userId) {
         log.info("Поступил запрос на подтверждение бронирования");

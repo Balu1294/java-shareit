@@ -12,13 +12,15 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
+import static ru.practicum.shareit.contstant.Constant.*;
+
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
 public class BookingController {
-    public static final String USER_HEADER = "X-Sharer-User-Id";
+
     private final BookingClient bookingClient;
 
     @GetMapping
@@ -39,9 +41,9 @@ public class BookingController {
         return bookingClient.bookItem(userId, requestDto);
     }
 
-    @GetMapping("/{bookingId}")
+    @GetMapping(BOOKING_ID_PATH)
     public ResponseEntity<Object> getBooking(@RequestHeader(USER_HEADER) int userId,
-                                             @PathVariable Integer bookingId) {
+                                             @PathVariable(BOOKING_ID) Integer bookingId) {
         return bookingClient.getBooking(userId, bookingId);
     }
 
@@ -55,15 +57,15 @@ public class BookingController {
         return bookingClient.getBookingsForOwner(userId, state, from, size);
     }
 
-    @PatchMapping("/{bookingId}")
+    @PatchMapping(BOOKING_ID_PATH)
     public ResponseEntity<Object> setApprove(@RequestHeader(USER_HEADER) Integer userId,
-                                             @PathVariable Integer bookingId,
+                                             @PathVariable(BOOKING_ID) Integer bookingId,
                                              @RequestParam Boolean approved) {
         return bookingClient.setApprove(userId, bookingId, approved);
     }
 
-    @DeleteMapping("/{bookingId}")
-    public ResponseEntity<Object> deleteBooking(@PathVariable Integer bookingId,
+    @DeleteMapping(BOOKING_ID_PATH)
+    public ResponseEntity<Object> deleteBooking(@PathVariable(BOOKING_ID) Integer bookingId,
                                                 @RequestHeader(USER_HEADER) Integer userId) {
         return bookingClient.deleteBooking(bookingId, userId);
     }

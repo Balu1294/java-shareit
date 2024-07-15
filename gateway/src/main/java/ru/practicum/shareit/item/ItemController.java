@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-import static ru.practicum.shareit.booking.BookingController.USER_HEADER;
+import static ru.practicum.shareit.contstant.Constant.*;
 
 
 @RestController
@@ -20,10 +20,11 @@ import static ru.practicum.shareit.booking.BookingController.USER_HEADER;
 @Validated
 @Slf4j
 public class ItemController {
+
     private final ItemClient client;
 
-    @GetMapping("/{itemId}")
-    public ResponseEntity<Object> getItemById(@PathVariable("itemId") Integer itemId,
+    @GetMapping(ITEM_ID_PATH)
+    public ResponseEntity<Object> getItemById(@PathVariable(ITEM_ID) Integer itemId,
                                               @RequestHeader(USER_HEADER) Integer userId) {
         return client.getItem(userId, itemId);
     }
@@ -35,8 +36,10 @@ public class ItemController {
         return client.getItems(userId, from, size);
     }
 
-    @PatchMapping("/{itemId}")
-    public ResponseEntity<Object> updateItem(@PathVariable("itemId") Integer itemId, @RequestBody ItemDto item, @RequestHeader(USER_HEADER) Integer userId) {
+    @PatchMapping(ITEM_ID_PATH)
+    public ResponseEntity<Object> updateItem(@PathVariable(ITEM_ID) Integer itemId,
+                                             @RequestBody ItemDto item,
+                                             @RequestHeader(USER_HEADER) Integer userId) {
         checkValidItemForUpdate(item);
         return client.update(userId, item, itemId);
     }
@@ -47,8 +50,8 @@ public class ItemController {
         return client.add(userId, item);
     }
 
-    @DeleteMapping("/{itemId}")
-    public ResponseEntity<Object> deleteItem(@PathVariable Integer itemId,
+    @DeleteMapping(ITEM_ID_PATH)
+    public ResponseEntity<Object> deleteItem(@PathVariable(ITEM_ID) Integer itemId,
                                              @RequestHeader(USER_HEADER) Integer userId) {
         return client.delete(userId, itemId);
     }

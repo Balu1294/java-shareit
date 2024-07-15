@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-import static ru.practicum.shareit.booking.BookingController.USER_HEADER;
+import static ru.practicum.shareit.contstant.Constant.*;
 
 @RestController
 @RequestMapping(path = "/requests")
@@ -18,6 +18,7 @@ import static ru.practicum.shareit.booking.BookingController.USER_HEADER;
 @Validated
 @Slf4j
 public class RequestController {
+
     private final RequestClient client;
 
     @PostMapping
@@ -38,14 +39,14 @@ public class RequestController {
         return client.getItemRequestsPageable(userId, from, size);
     }
 
-    @GetMapping("/{requestId}")
+    @GetMapping(REQUEST_ID_PATH)
     public ResponseEntity<Object> getItemRequestById(@RequestHeader(USER_HEADER) Integer userId,
-                                                     @Positive @PathVariable Integer requestId) {
+                                                     @Positive @PathVariable(REQUEST_ID) Integer requestId) {
         return client.getItemRequest(userId, requestId);
     }
 
-    @DeleteMapping("/{requestId}")
-    public ResponseEntity<Object> deleteItemRequest(@Positive @PathVariable("requestId") Integer requestId,
+    @DeleteMapping(REQUEST_ID_PATH)
+    public ResponseEntity<Object> deleteItemRequest(@Positive @PathVariable(REQUEST_ID) Integer requestId,
                                                     @RequestHeader(USER_HEADER) Integer userId) {
         return client.delete(requestId, userId);
     }

@@ -11,12 +11,13 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
 
+import static ru.practicum.shareit.constant.Constant.*;
+
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 @Slf4j
 public class ItemController {
-    public static final String HEADER_USER = "X-Sharer-User-Id";
 
     private final ItemService itemService;
 
@@ -27,17 +28,17 @@ public class ItemController {
         return itemService.createItem(ownerId, itemDto);
     }
 
-    @PatchMapping("/{item-id}")
+    @PatchMapping(ITEM_ID_PATH)
     public ItemDto updateItem(@RequestHeader(HEADER_USER) Integer ownerId,
                               @RequestBody ItemDto itemDto,
-                              @PathVariable("item-id") Integer itemId) {
+                              @PathVariable(ITEM_ID) Integer itemId) {
         log.info("Поступил запрос на обновление данных о вещи с id= {}", itemId);
         return itemService.updateItem(ownerId, itemId, itemDto);
     }
 
-    @GetMapping("/{item-id}")
+    @GetMapping(ITEM_ID_PATH)
     public ItemBookDto getItemById(@RequestHeader(HEADER_USER) Integer ownerId,
-                                   @PathVariable("item-id") Integer itemId) {
+                                   @PathVariable(ITEM_ID) Integer itemId) {
         log.info("Поступил запрос на получение данных о вещи с id= {}", itemId);
         return itemService.getItemById(ownerId, itemId);
     }
@@ -51,8 +52,8 @@ public class ItemController {
         return items;
     }
 
-    @DeleteMapping("/{item-id}")
-    public ItemDto deleteItem(@PathVariable("item-id") Integer itemId,
+    @DeleteMapping(ITEM_ID_PATH)
+    public ItemDto deleteItem(@PathVariable(ITEM_ID) Integer itemId,
                               @RequestHeader(HEADER_USER) Integer userId) {
         return itemService.deleteItem(itemId, userId);
     }
